@@ -22,17 +22,17 @@ def main():
     
     #Create a contour plot of the SST data and plot it on a figure
     SST_map = MapContour(SST2d.coords["yh"], SST2d.coords["xh"], SST2d)
+
     plot = CreatePlot()
     plot.plot_layers = [SST_map]
     plot.projection = "plcarr"
     plot.domain = "global"
     plot.add_xlabel("Longitude")
     plot.add_ylabel("Latitude")
-    plot.add_colorbar()
+    plot.add_map_features(["coastline"])
 
     fig = CreateFigure()
     fig.plot_list = [plot]
-    #fig._map_contour(SST_map)
     fig.create_figure()
     fig.save_figure("figure1.png")
 
