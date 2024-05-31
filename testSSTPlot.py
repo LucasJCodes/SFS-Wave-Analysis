@@ -26,6 +26,10 @@ def main():
     plot.plot_layers = [SST_map]
     plot.projection = "plcarr"
     plot.domain = "global"
+    plot.add_xlabel("Longitude")
+    plot.add_ylabel("Latitude")
+    plot.add_colorbar()
+
     fig = CreateFigure()
     fig.plot_list = [plot]
     #fig._map_contour(SST_map)
