@@ -5,7 +5,7 @@
 
 import xarray as xr
 import matplotlib.pyplot as plt
-from emcpy.plots.map_plots import MapContour
+from emcpy.plots.map_plots import MapGridded
 from emcpy.plots import CreatePlot, CreateFigure
 
 def main():
@@ -21,7 +21,7 @@ def main():
     SST2d = SST["time" == 0]
     
     #Create a contour plot of the SST data and plot it on a figure
-    SST_map = MapContour(SST2d.coords["yh"], SST2d.coords["xh"], SST2d)
+    SST_map = MapGridded(SST2d.coords["yh"], SST2d.coords["xh"], SST2d)
 
     plot = CreatePlot()
     plot.plot_layers = [SST_map]
