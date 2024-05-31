@@ -28,9 +28,9 @@ def main():
     plot.domain = "global"
     fig = CreateFigure()
     fig.plot_list = [plot]
-    fig._map_contour(SST_map)
+    #fig._map_contour(SST_map)
     fig.create_figure()
-    #plt.show()
+    fig.save_figure("figure1.png")
 
 if __name__ == "__main__":
     main()
