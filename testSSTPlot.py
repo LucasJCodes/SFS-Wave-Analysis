@@ -22,7 +22,6 @@ def main():
     
     #Create a contour plot of the SST data and plot it on a figure
     SST_map = MapGridded(SST2d.coords["yh"], SST2d.coords["xh"], SST2d)
-    SST_map.cmap = "plasma"
 
     plot = CreatePlot()
     plot.plot_layers = [SST_map]
