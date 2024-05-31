@@ -14,19 +14,23 @@ def main():
     filename = "gefs.ocean.t00z.6hr_avg.f009.nc"
 
     data = xr.open_dataset(path + filename)
-    print(data.dims)
 
     #subset data to only have SST data
     SST = data["SST"]
     
+    SST2d = SST["time" == 0]
+    
     #Create a contour plot of the SST data and plot it on a figure
-    SST_map = MapContour(SST.coords["xh"], SST.coords["yh"], SST)
+    SST_map = MapContour(SST2d.coords["yh"], SST2d.coords["xh"], SST2d)
     plot = CreatePlot()
+    plot.plot_layers = [SST_map]
+    plot.projection = "plcarr"
+    plot.domain = "global"
     fig = CreateFigure()
     fig.plot_list = [plot]
-    fig.map_contour(SST_map)
+    fig._map_contour(SST_map)
     fig.create_figure()
-    plt.show()
+    #plt.show()
 
 if __name__ == "__main__":
     main()
