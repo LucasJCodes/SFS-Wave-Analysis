@@ -24,8 +24,8 @@ def main():
     ax = ax.flatten()
 
     #contour plot the data
-    ax[0].contourf(lat["xh"], lat["yh"], lat)
-    ax[1].contourf(lon["xh"], lat["yh"], lon)
+    ax[0].contourf(lat["xh"], lat["yh"], lat, transform = ccrs.PlateCarree())
+    ax[1].contourf(lon["xh"], lat["yh"], lon, transform = ccrs.PlateCarree())
 
     ax[0].coastlines()
     ax[1].coastlines()
