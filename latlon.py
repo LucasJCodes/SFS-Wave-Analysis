@@ -13,18 +13,24 @@ def main():
     path = "/work2/noaa/marine/ljones/experiments/timing/COMROOT/timing/gefs.20230123/00/mem000/model_data/ocean/history/"
     filename = "gefs.ocean.t00z.6hr_avg.f009.nc"
 
+
+    #read in data and separate out model lat and lon data
     data_in = xr.load_dataset(path + filename)
     lat = data_in["geolat"]
+    lon = data_in["geolon"]
 
-    fig = plt.figure() 
-    ax = fig.add_subplot(1, 1, 1, projection = ccrs.PlateCarree())
+    fig, ax = plt.subplots(nrows = 2, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    ax.set_global()
-    ax.coastlines()
+    ax = ax.flatten()
 
-    ax.contourf(lat["xh"], lat["yh"], lat)
+    #contour plot the data
+    ax[0].contourf(lat["xh"], lat["yh"], lat)
+    ax[1].contourf(lon["xh"], lat["yh"], lon)
 
-    plt.savefig("lat.png")
+    ax[0].coastlines()
+    ax[1].coastlines()
+
+    plt.savefig("latlon.png")
 
 if __name__ == "__main__":
     main()
