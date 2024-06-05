@@ -16,11 +16,10 @@ def main():
     #subset to get significant wave height  
     data2d = data_in.isel(time = 0)
     sig_wave = data2d["HTSGW_surface"]
-    print(sig_wave)
 
-    fig, ax = plt.subplots(nrows = 1, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
+    fig, ax = plt.subplots(nrows = 1, ncols = 1)
 
-    ax.contourf(sig_wave[0:168], projection = ccrs.PlateCarree())
+    ax.contourf(sig_wave[0:168])
     #ax.coastlines()
     
     plt.savefig("fig_sigwave.png")
