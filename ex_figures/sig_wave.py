@@ -17,10 +17,11 @@ def main():
     data2d = data_in.isel(time = 0)
     sig_wave = data2d["HTSGW_surface"]
 
+    #plot the data on a contour plot
     fig, ax = plt.subplots(nrows = 1, ncols = 1)
 
-    ax.contourf(sig_wave[0:168])
-    #ax.coastlines()
+    ax.contourf( sig_wave)
+    ax.set_title("Significant Wave Height 1997-11-01")
     
     plt.savefig("fig_sigwave.png")
 
