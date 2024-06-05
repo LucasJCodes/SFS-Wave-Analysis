@@ -14,12 +14,14 @@ def main():
     data_in = xr.load_dataset(path + file)
 
     #subset to get significant wave height  
-    sig_wave = data_in["HTSGW_surface"]
+    data2d = data_in.isel(time = 0)
+    sig_wave = data2d["HTSGW_surface"]
+    print(sig_wave)
 
     fig, ax = plt.subplots(nrows = 1, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    ax.contourf(sig_wave["time" == 0], projections = ccrs.PlateCarree())
-    ax.coastlines()
+    ax.contourf(sig_wave[0:168], projection = ccrs.PlateCarree())
+    #ax.coastlines()
     
     plt.savefig("fig_sigwave.png")
 
