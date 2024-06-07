@@ -17,7 +17,7 @@ def main():
     files = glob.glob(path + "/*.nc")
 
     # prepare figure, axes for plotting
-    fig, ax = plt.subplots(ROWS, COLS, subplot_kw = {"projection": ccrs.Robinson()})
+    fig, ax = plt.subplots(ROWS, COLS, subplot_kw = {"projection": ccrs.PlateCarree()})
 
     # perform seven iterations, loading in data forward in time and then plotting
     for file in files:
@@ -25,8 +25,6 @@ def main():
         # read data in and subset
         data_in = xr.load_dataset(file)
         data2d = data_in.isel(time = 0)
-        SST = data2d["WTMP_surface"]
-        #print(SST)
         
         # plot each file on its own ax
 
@@ -41,7 +39,7 @@ def main():
             i = curr_i
             j = 0
 
-        test = ax[i][j].contourf(SST, transform = ccrs.Robinson())
+        ax[i][j].contourf(data2d["longitude"], data2d["latitude"], data2d["WTMP_surface"], transform = ccrs.PlateCarree())
         ax[i][j].coastlines()
 
     plt.savefig("SST_time_step.png")
