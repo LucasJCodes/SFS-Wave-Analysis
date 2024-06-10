@@ -32,14 +32,31 @@ def main():
     #plot the two data sets
     fig, ax = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    ax[0][0].contourf(data_wave.longitude, data_wave.latitude, data_wave["WTMP_surface"])
+    im1 = ax[0][0].contourf(data_wave.longitude, data_wave.latitude, (data_wave["WTMP_surface"] - 273.15))
     ax[0][0].coastlines()
+    ax[0][0].set_title("(a) with waves", fontsize = 8)
+    plt.colorbar(im1, location = "bottom")
 
-    ax[0][1].contourf(data_nowave.longitude, data_nowave.latitude, data_nowave["WTMP_surface"])
+    im2 = ax[0][1].contourf(data_nowave.longitude, data_nowave.latitude, data_nowave["WTMP_surface"] - 273.15)
     ax[0][1].coastlines()
+    ax[0][1].set_title("(b) no waves", fontsize = 8)
+    plt.colorbar(im2, location = "bottom")
 
-    # calculate and plot the difference between the two 
+    # calculate and plot the difference between the two
+    diff_sst = data_wave["WTMP_surface"] - data_nowave["WTMP_surface"]
+    im3 = ax[1][0].contourf(diff_sst.longitude, diff_sst.latitude, diff_sst)
+    ax[1][0].coastlines()
+    ax[1][0].set_title("(d) (a) - (b)", fontsize = 8)
+    plt.colorbar(im3, location = "bottom", extend = "both")
 
+    # calculate the percent difference
+    per_diff = (data_wave["WTMP_surface"] - data_nowave["WTMP_surface"]) / ((data_wave["WTMP_surface"] + data_nowave["WTMP_surface"]) / 2)
+    im4 = ax[1][1].contourf(per_diff.longitude, per_diff.latitude, per_diff)
+    ax[1][1].coastlines()
+    ax[1][1].set_title("(d) % difference between (a) and (b)", fontsize = 8)
+    plt.colorbar(im4, location = "bottom", extend = "both")
+
+    fig.suptitle("SST Comparison GEFS ini Nov 1, 1997", fontsize = 16)
     plt.savefig("97SST_comparison")
 
 if __name__ == "__main__":
