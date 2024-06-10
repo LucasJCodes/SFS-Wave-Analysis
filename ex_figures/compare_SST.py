@@ -33,6 +33,12 @@ def main():
     fig, ax = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
     ax[0][0].contourf(data_wave.longitude, data_wave.latitude, data_wave["WTMP_surface"])
+    ax[0][0].coastlines()
+
+    ax[0][1].contourf(data_nowave.longitude, data_nowave.latitude, data_nowave["WTMP_surface"])
+    ax[0][1].coastlines()
+
+    # calculate and plot the difference between the two 
 
     plt.savefig("97SST_comparison")
 
