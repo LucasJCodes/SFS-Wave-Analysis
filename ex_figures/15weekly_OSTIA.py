@@ -7,6 +7,8 @@
 
 import xarray as xr
 import datetime as dt
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
 
 def main():
 
@@ -25,11 +27,24 @@ def main():
     nowave_ds = nowave_in["SST"] - 273.15 #deg C
 
     #use groupby() to put data into weekly segments 
-    ostia_ds = ostia_in.groupby("time.week")
-    ostia_ds2 = ostia_in.convert_calendar(calendar = "standard").groupby("time.week")
+    ostia = ostia_in.groupby("time.week").mean()
+    ostia2 = ostia_in.convert_calendar(calendar = "standard").groupby("time.week").mean()
+    wave = wave_ds.groupby("time.week").mean()
+    nowave = nowave_ds.groupby("time.week").mean()
 
+    #side quest: test difference between using conver_calendar() vs without
     print(ostia_ds[45].time)
     print(ostia_ds2[45].time)
+
+    #calculate differences for comparison plots
+    waves_no = wave - nowave
+
+    wave_ostia = wave - ostia
+
+    nowave_ostia = nowave - ostia
+
+    #set up figure for the plots
+    fig, axs = plt.subplots(nrows = 3, ncols = 5, subplot_kw = {"projection": ccrs.PlateCarree()})
 
 if __name__ == "__main__":
     main()
