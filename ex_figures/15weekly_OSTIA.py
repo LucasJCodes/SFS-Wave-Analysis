@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 
+#SBATCH -J 15weekly_OSTIA.py
+#SBATCH -o 15weekly_OSTIA_out
+#SBATCH -e 15weekly_OSTIA_error
+#SBATCH -A marine-cpu
+#SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=0
+#SBATCH -t 05:00
+
+
 ############################
 #Author: Lucas Jones, Hollings Scholar Intern at NOAA EMC
 #Date: 6/11/24
@@ -12,7 +23,7 @@ import cartopy.crs as ccrs
 
 def main():
 
-    ostia_path = "/work2/noaa/marine/jmeixner/ReferenceData/sst_OSTIA/0p05/2015/201511**-UKMO-L4HRfnd-GLOB-v01-fv02-OSTIA.nc" 
+    ostia_path = "/work2/noaa/marine/jmeixner/ReferenceData/sst_OSTIA/1p00/daily/sst_OSTIA.2015******.1p00.nc" 
     wave_path = "/work2/noaa/marine/ljones/30day_tests/Nov15_S2S/COMROOT/Nov15_S2S/gefs.20151101/00/mem000/products/ocean/netcdf/*.nc"
     nowave_path = "/work2/noaa/marine/ljones/30day_tests/Nov15_S2SW/COMROOT/Nov15_S2SW/gefs.20151101/00/mem000/products/ocean/netcdf/*.nc"
 
@@ -51,10 +62,10 @@ def main():
     p3 = axs[0][2].contourf(waves_no[3].xh, waves_no[3].yh, waves_no[3], transform = ccrs.PlateCarree())
     p4 = axs[0][3].contourf(waves_no[4].xh, waves_no[4].yh, waves_no[4], transform = ccrs.PlateCarree())
 
-    #p5 = axs[1][0].contourf(wave_ostia[1].lat, wave_ostia[1].lon, wave_ostia[1], transform = ccrs.PlateCarree())
-    #p6 = axs[1][1].contourf(wave_ostia[2].lat, wave_ostia[2].lon, wave_ostia[2], transform = ccrs.PlateCarree())
-    #p7 = axs[1][2].contourf(wave_ostia[3].lat, wave_ostia[3].lon, wave_ostia[3], transform = ccrs.PlateCarree())
-    #p8 = axs[1][3].contourf(wave_ostia[4].lat, wave_ostia[4].lon, wave_ostia[4], transform = ccrs.PlateCarree())
+    p5 = axs[1][0].contourf(wave_ostia[1].lat, wave_ostia[1].lon, wave_ostia[1], transform = ccrs.PlateCarree())
+    p6 = axs[1][1].contourf(wave_ostia[2].lat, wave_ostia[2].lon, wave_ostia[2], transform = ccrs.PlateCarree())
+    p7 = axs[1][2].contourf(wave_ostia[3].lat, wave_ostia[3].lon, wave_ostia[3], transform = ccrs.PlateCarree())
+    p8 = axs[1][3].contourf(wave_ostia[4].lat, wave_ostia[4].lon, wave_ostia[4], transform = ccrs.PlateCarree())
 
     plt.savefig("bigcomp_15.png")
 
