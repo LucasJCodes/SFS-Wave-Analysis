@@ -50,20 +50,27 @@ def main():
     diff3 = w3 - now3
     diff4 = w4 - now4
 
+    print(now4.min().values)
+    print(w4.min().values)
+
     #plot the differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
     ax1 = axs[0][0].contourf(diff1.longitude, diff1.latitude, diff1, transform = ccrs.PlateCarree())
     axs[0][0].coastlines()
+    axs[0][0].set_title("Nov 1-7")
 
     ax2 = axs[0][1].contourf(diff2.longitude, diff2.latitude, diff2, transform = ccrs.PlateCarree())
     axs[0][1].coastlines()
+    axs[0][1].set_title("Nov. 8-14")
 
     ax3 = axs[1][0].contourf(diff3.longitude, diff3.latitude, diff3, transform = ccrs.PlateCarree())
     axs[1][0].coastlines()
+    axs[1][0].set_title("Nov. 18-24")
 
     ax4 = axs[1][1].contourf(diff4.longitude, diff4.latitude, diff4, transform = ccrs.PlateCarree())
     axs[1][1].coastlines()
+    axs[1][1].set_title("Nov. 25-Dec 1")
 
     plt.savefig("pres850_comp.png")
 
