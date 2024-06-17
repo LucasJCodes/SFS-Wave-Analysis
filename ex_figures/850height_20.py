@@ -42,7 +42,7 @@ def main():
     w1 = wave_850.sel(time = slice("2020-11-01", "2020-11-07")).mean(dim = "time")
     w2 = wave_850.sel(time = slice("2020-11-08", "2020-11-14")).mean(dim = "time")
     w3 = wave_850.sel(time = slice("2020-11-18", "2020-11-24")).mean(dim = "time")
-    w4 = wave_850.sel(time = slice("2020-11-25", "2020-11-01")).mean(dim = "time")
+    w4 = wave_850.sel(time = slice("2020-11-25", "2020-12-01")).mean(dim = "time")
 
     #calculate differnces for plotting
     diff1 = w1 - now1
@@ -50,17 +50,14 @@ def main():
     diff3 = w3 - now3
     diff4 = w4 - now4
 
-    print(now4.min().values)
-    print(w4.min().values)
-
     #plot the differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    ax1 = axs[0][0].contourf(diff1.longitude, diff1.latitude, diff1, transform = ccrs.PlateCarree())
+    ax1 = axs[0][0].contourf(diff1.longitude, diff1.latitude, diff1, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][0].coastlines()
     axs[0][0].set_title("Nov 1-7")
 
-    ax2 = axs[0][1].contourf(diff2.longitude, diff2.latitude, diff2, transform = ccrs.PlateCarree())
+    ax2 = axs[0][1].contourf(diff2.longitude, diff2.latitude, diff2, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][1].coastlines()
     axs[0][1].set_title("Nov. 8-14")
 
