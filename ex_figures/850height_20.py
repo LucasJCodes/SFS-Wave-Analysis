@@ -61,13 +61,16 @@ def main():
     axs[0][1].coastlines()
     axs[0][1].set_title("Nov. 8-14")
 
-    ax3 = axs[1][0].contourf(diff3.longitude, diff3.latitude, diff3, transform = ccrs.PlateCarree())
+    ax3 = axs[1][0].contourf(diff3.longitude, diff3.latitude, diff3, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][0].coastlines()
     axs[1][0].set_title("Nov. 18-24")
 
-    ax4 = axs[1][1].contourf(diff4.longitude, diff4.latitude, diff4, transform = ccrs.PlateCarree())
+    ax4 = axs[1][1].contourf(diff4.longitude, diff4.latitude, diff4, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][1].coastlines()
     axs[1][1].set_title("Nov. 25-Dec 1")
+    
+    cax = fig.add_axes([0.2, 0.08, 0.6, 0.04])
+    plt.colorbar(ax4, cax = cax, extend = "both", orientation = "horizontal")
 
     plt.savefig("pres850_comp.png")
 
