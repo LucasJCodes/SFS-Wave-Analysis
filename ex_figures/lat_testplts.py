@@ -37,10 +37,30 @@ def main():
     ostia = ostia_ds.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
     wave = wave_ds.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
 
-    fig, axs = plt.subplots(nrows = 1, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
+    ostia_lon = ostia.assign_coords(xh = (ostia.xh - 360))
 
-    axs[0].contourf(ostia.xh, ostia.yh, ostia, transform = ccrs.PlateCarree())
+    ostia_interp = ostia_lon.interp_like(wave, method = "linear") #kwargs = {"bounds_error": False, "fill_value":  "extrapolate"})
+
+    diff = wave - ostia_interp
+
+    print(ostia_lon)
+    print(wave)
+    print(ostia_interp)
+    print(ostia_interp.min().values)
+
+    fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
+
+    axs[0].contourf(ostia_interp.xh, ostia_interp.yh, ostia_interp, transform = ccrs.PlateCarree())
+    axs[0].coastlines()
+    axs[0].set_title("OSTIA")
+
     axs[1].contourf(wave.xh, wave.yh, wave, transform = ccrs.PlateCarree())
+    axs[1].coastlines()
+    axs[1].set_title("GEFS")
+
+    axs[2].contourf(diff.xh, diff.yh, diff, transform = ccrs.PlateCarree())
+    axs[2].coastlines()
+    axs[2].set_title("Difference")
 
     plt.savefig("lon_confusion.png")
 
