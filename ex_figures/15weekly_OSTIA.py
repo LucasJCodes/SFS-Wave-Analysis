@@ -13,7 +13,7 @@
 
 ############################
 #Author: Lucas Jones, Hollings Scholar Intern at NOAA EMC
-#Date: 6/11/24
+#Date: 6/21/24
 ############################
 
 import cartopy.crs as ccrs
@@ -67,6 +67,19 @@ def main():
 
     nowave_ostia = nowave_hr - ostia_interp
 
+    #calculate min and max of each difference fo use later in plotting
+    wnow_min = wave_no.min().values
+    wnow_max = wave_no.max().values
+
+    ow_min = wave_ostia.min().values
+    ow_max = wave_ostia.max().values
+
+    onow_min = nowave_ostia.min().values
+    onow_max = nowave_ostia.max().values
+
+    print(wnow_min)
+    print(wnow_max)
+
     #use slice() to put data into non calendar weekly subsets
     wnow1 = wave_no.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
     wnow2 = wave_no.sel(time = slice("2015-11-08", "2015-11-14")).mean(dim = "time")
@@ -87,21 +100,23 @@ def main():
     onow_arr = [onow1, onow2, onow3, onow4]
 
     #set up figure for the plots
-    fig, axs = plt.subplots(nrows = NROWS, ncols = NCOLS, subplot_kw = {"projection": ccrs.PlateCarree()})
+    fig, axs = plt.subplots(nrows = NROWS, ncols = NCOLS, layout = "constrained", subplot_kw = {"projection": ccrs.PlateCarree()})
 
     #plot wave vs no wave differences
     plts_wnow = []
 
     for i in range(0, NCOLS):
-        p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], transform = ccrs.PlateCarree(), cmap = "seismic")
+        p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max)
         axs[0][i].coastlines()
         plts_wnow.append(p)
+
+    plt.colorbar(ax = axs[0, :], location = "bottom")
     
     #plot wave vs ostia differences
     plts_ow = []
 
     for j in range(0, NCOLS):
-        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "seismic")
+        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = ow_min, vmax = ow_max)
         axs[1][j].coastlines()
         plts_ow.append(p)
 
@@ -109,7 +124,7 @@ def main():
     plts_onow = []
 
     for k in range(0, NCOLS):
-        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "seismic")
+        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = onow_min, vmax = onow_max)
         axs[2][k].coastlines()
         plts_onow.append(p)
 
