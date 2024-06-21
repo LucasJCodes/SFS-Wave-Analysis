@@ -43,7 +43,10 @@ def main():
     ostia_ds = ostia_in["analysed_sst"] - 273.15 #deg C
     wave_ds = wave_in["SST"] - 273.15 #deg C
     nowave_ds = nowave_in["SST"] - 273.15 #deg C
-    
+   
+    wave_ds["time"] = wave_ds.indexes["time"].to_datetimeindex()
+    nowave_ds["time"] = nowave_ds.indexes["time"].to_datetimeindex()
+
     #interpolate the data using xesmf
     file_weights = 'regrid_weights.nc'
     if os.path.exists(file_weights):
@@ -100,21 +103,24 @@ def main():
     plts_wnow = []
 
     for i in range(0, NCOLS):
-        p = axs[0][i].contourf(wnow_arr[i].xh, wnow_arr[i].yh, wnow_arr[i], transform = ccrs.PlateCarree())
+        p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], transform = ccrs.PlateCarree(), cmap = "seismic")
+        axs[0][i].coastlines()
         plts_wnow.append(p)
     
     #plot wave vs ostia differences
     plts_ow = []
 
     for j in range(0, NCOLS):
-        p = axs[1][j].contourf(ow_arr[j].xh, ow_arr[j].yh, ow_arr[j], transform = ccrs.PlateCarree())
+        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "seismic")
+        axs[1][j].coastlines()
         plts_ow.append(p)
 
     #plot now wave vs ostia differences 
     plts_onow = []
 
     for k in range(0, NCOLS):
-        p = axs[2][k].contourf(onow_arr[k].xh, onow_arr[k].yh, onow_arr[k], transform = ccrs.PlateCarree())
+        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "seismic")
+        axs[2][k].coastlines()
         plts_onow.append(p)
 
     plt.savefig("bigcomp_15.png")
