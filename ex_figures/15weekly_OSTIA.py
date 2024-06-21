@@ -16,10 +16,13 @@
 #Date: 6/11/24
 ############################
 
-import xarray as xr
+import cartopy.crs as ccrs
 import datetime as dt
 import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
+import os
+import pandas as pd
+import xarray as xr
+import xesmf as xe
 
 def main():
 
@@ -32,34 +35,44 @@ def main():
     wave_path = "/work2/noaa/marine/ljones/30day_tests/Nov15_S2SW/COMROOT/Nov15_S2SW/gefs.20151101/00/mem000/products/ocean/netcdf/*.nc"
 
     #read the data in
-    ostia_in = xr.open_mfdataset(ostia_path).rename({"lat": "yh", "lon": "xh"}).sel(time = slice("2015-11-01", "2015-12-02"))
-    wave_in = xr.open_mfdataset(wave_path)
-    nowave_in = xr.open_mfdataset(nowave_path)
+    ostia_in = xr.open_mfdataset(ostia_path).sel(time = slice("2015-11-01", "2015-11-30"))
+    wave_in = xr.open_mfdataset(wave_path).rename({"yh": "lat", "xh": "lon"})
+    nowave_in = xr.open_mfdataset(nowave_path).rename({"yh": "lat", "xh": "lon"})
 
-    #subset the model data with more that SST variables and convert to Celsius
-    ostia_ds = ostia_in["analysed_sst"] - 273.15 #deg c
+    #subset the model data to get SSTs, convert to Celsius
+    ostia_ds = ostia_in["analysed_sst"] - 273.15 #deg C
     wave_ds = wave_in["SST"] - 273.15 #deg C
-    nowave_ds = nowave_in["SST"] - 273.15 #deg C 
+    nowave_ds = nowave_in["SST"] - 273.15 #deg C
     
-    #change the OSTIA data coordinates from 1 to 360 to values from -300 to 60
-    ostia_lon = ostia_ds.assign_coords(xh = (ostia_ds.xh - 300))
+    #interpolate the data using xesmf
+    file_weights = 'regrid_weights.nc'
+    if os.path.exists(file_weights):
+        regridder = xe.Regridder(ostia_ds, wave_ds, 'nearest_s2d', reuse_weights=True, filename=file_weights)
+    else:
+        regridder = xe.Regridder(ostia_ds, wave_ds, 'nearest_s2d', reuse_weights=False, filename=file_weights)
+    ostia_interp = regridder(ostia_ds)
 
-    #align the datasets so that differnces can be performed
-    #ostia_ds, wave_ds, nowave_ds = xr.align(ostia_ds, wave_ds, nowave_ds, join = "right")
+    wave_hr = wave_ds.isel(time = (wave_ds.time.dt.hour == 12))
+    nowave_hr = nowave_ds.isel(time = (nowave_ds.time.dt.hour == 12))
 
-    #iterpolate the OSTIA dataset to match the style of the model products
-    ostia = ostia_lon.interp_like(wave_ds, method = "linear")
+    print("Waves:")
+    print(wave_hr)
 
-    print(ostia_lon.xh)
-    print(wave_ds.xh)
-    print(ostia)
+    print("No waves:")
+    print(nowave_hr)
+    
+    print("OSTIA:")
+    print(ostia_interp)
 
     #calculate differences for comparison plots
-    wave_no = wave_ds - nowave_ds
+    wave_no = wave_hr - nowave_hr
 
-    wave_ostia = wave_ds - ostia
+    wave_ostia = wave_hr - ostia_interp
 
-    nowave_ostia = nowave_ds - ostia
+    nowave_ostia = nowave_hr - ostia_interp
+
+    print("Waves - no waves")
+    print(wave_ostia)
 
     #use slice() to put data into non calendar weekly subsets
     wnow1 = wave_no.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
