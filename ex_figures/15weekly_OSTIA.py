@@ -44,6 +44,7 @@ def main():
     wave_ds = wave_in["SST"] - 273.15 #deg C
     nowave_ds = nowave_in["SST"] - 273.15 #deg C
    
+    #put cftime indexes in datetime format for comparison with OSTIA data (in datetime)
     wave_ds["time"] = wave_ds.indexes["time"].to_datetimeindex()
     nowave_ds["time"] = nowave_ds.indexes["time"].to_datetimeindex()
 
@@ -55,17 +56,9 @@ def main():
         regridder = xe.Regridder(ostia_ds, wave_ds, 'nearest_s2d', reuse_weights=False, filename=file_weights)
     ostia_interp = regridder(ostia_ds)
 
+    #remove model outputs other than the 12z runs
     wave_hr = wave_ds.isel(time = (wave_ds.time.dt.hour == 12))
     nowave_hr = nowave_ds.isel(time = (nowave_ds.time.dt.hour == 12))
-
-    print("Waves:")
-    print(wave_hr)
-
-    print("No waves:")
-    print(nowave_hr)
-    
-    print("OSTIA:")
-    print(ostia_interp)
 
     #calculate differences for comparison plots
     wave_no = wave_hr - nowave_hr
@@ -73,9 +66,6 @@ def main():
     wave_ostia = wave_hr - ostia_interp
 
     nowave_ostia = nowave_hr - ostia_interp
-
-    print("Waves - no waves")
-    print(wave_ostia)
 
     #use slice() to put data into non calendar weekly subsets
     wnow1 = wave_no.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
