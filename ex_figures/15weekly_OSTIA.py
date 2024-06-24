@@ -94,14 +94,11 @@ def main():
 
     ow_min, ow_max = cbar_range(wave_ostia)
     ow_step = (ow_max - ow_min) / 10
-    ow_levels = np.arange(ow_min, ow_max + ow_step, ow_step)
+    ow_levels = np.arange(ow_min, ow_max + ow_step - 0.1, ow_step) #slight binary math error, subtract 0.1 to make sure only the top bin is included, not an additional one
 
     onow_min, onow_max = cbar_range(nowave_ostia)
     onow_step = (onow_max - onow_min) / 10
     onow_levels = np.arange(onow_min, onow_max + onow_step, onow_step)
-
-    print(ow_min)
-    print(ow_max)
 
     #use slice() to put data into non calendar weekly subsets
     wnow1 = wave_no.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
@@ -130,30 +127,35 @@ def main():
 
     for i in range(0, NCOLS):
         p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], levels = wnow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max, extend = "both")
+        axs[0][i].set_title("Week {}".format(i + 1))
         axs[0][i].coastlines()
         plts_wnow.append(p)
 
-    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "bottom")
+    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "bottom", label = "Waves - No Waves, deg C")
     
     #plot wave vs ostia differences
     plts_ow = []
 
     for j in range(0, NCOLS):
-        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = ow_min, vmax = ow_max, extend = "both")
+        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], levels = ow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = ow_min, vmax = ow_max, extend = "both")
+        axs[1][j].set_title("Week {}".format(j + 1))
         axs[1][j].coastlines()
         plts_ow.append(p)
 
-    fig.colorbar(plts_ow[0], ax = axs[1, :].ravel().tolist(), location = "bottom")
+    fig.colorbar(plts_ow[0], ax = axs[1, :].ravel().tolist(), location = "bottom", label = "Waves - OSTIA, deg C")
 
     #plot now wave vs ostia differences 
     plts_onow = []
 
     for k in range(0, NCOLS):
-        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = onow_min, vmax = onow_max, extend = "both")
+        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], levels = onow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = onow_min, vmax = onow_max, extend = "both")
+        axs[2][k].set_title("Week {}".format(k + 1))
         axs[2][k].coastlines()
         plts_onow.append(p)
 
-    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "bottom")
+    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "bottom", label = "No Waves - OSTIA, deg C")
+
+    fig.suptitle("GEFS SSTs w/ and w/o Waves Compared to OSTIA")
 
     plt.savefig("bigcomp_15.png")
 
