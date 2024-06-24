@@ -16,7 +16,7 @@
 #Date: 6/24/24
 ############################
 
-#This program reads in model outputted precipitation data for three different IC datess (1997-11-01, 2015-11-01, 2020-11-01) and 
+#This program reads in model outputted precipitation data from IC 2020-11-01 SFS runs with and without waves and compares differences by week.
 
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
@@ -72,23 +72,23 @@ def main():
     #plot the weekly differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cbar = "seismic", vmin = vmin, vmax = vmax)
+    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax)
     axs[0][0].set_title("Week 1")
     axs[0][0].coastlines()
 
-    p2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree(), cbar = "seismic", vmin = vmin, vmax = vmax)
+    p2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax)
     axs[0][1].set_title("Week 2")
     axs[0][1].coastlines()
 
-    p3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, transform = ccrs.PlateCarree(), cbar = "seismic", vmin = vmin, vmax = vmax)
+    p3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax)
     axs[1][0].set_title("Week 3")
     axs[1][0].coastlines()
 
-    p4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, transform = ccrs.PlateCarree(), cbar = "seismic", vmin = vmin, vmax = vmax) 
+    p4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax) 
     axs[1][1].set_title("Week 4")
     axs[1][1].coastlines()
 
-    fig.colorbar(p1, ax = axs[1, :].ravel().tolist(), location = "bottom")
+    fig.colorbar(p1, ax = axs[1, :].ravel().tolist(), location = "bottom", extend = "both")
 
     plt.savefig("comp_precip.png")
 
