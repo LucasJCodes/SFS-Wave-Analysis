@@ -19,10 +19,30 @@
 import cartopy.crs as ccrs
 import datetime as dt
 import matplotlib.pyplot as plt
+import numpy as np
 import os
 import pandas as pd
 import xarray as xr
 import xesmf as xe
+
+#simple helpter function to determine the contour range for a sysmetrical colorbar 
+def cbar_range(dataset):
+    
+    vmin = np.nan
+    vmax = np.nan
+
+    data_min = dataset.min().values
+    data_max = dataset.max().values
+
+    if data_max > abs(data_min):
+        vmax = data_max
+        vmin = -data_max
+
+    else:
+        vmax = abs(data_min)
+        vmin = - abs(data_min)
+
+    return vmin, vmax
 
 def main():
 
@@ -39,10 +59,10 @@ def main():
     wave_in = xr.open_mfdataset(wave_path).rename({"yh": "lat", "xh": "lon"})
     nowave_in = xr.open_mfdataset(nowave_path).rename({"yh": "lat", "xh": "lon"})
 
-    #subset the model data to get SSTs, convert to Celsius
+    #subset the model data to get SSTs, convert to Celsius if necessary 
     ostia_ds = ostia_in["analysed_sst"] - 273.15 #deg C
-    wave_ds = wave_in["SST"] - 273.15 #deg C
-    nowave_ds = nowave_in["SST"] - 273.15 #deg C
+    wave_ds = wave_in["SST"] #already in deg C
+    nowave_ds = nowave_in["SST"] #a;ready in deg C
    
     #put cftime indexes in datetime format for comparison with OSTIA data (in datetime)
     wave_ds["time"] = wave_ds.indexes["time"].to_datetimeindex()
@@ -67,18 +87,21 @@ def main():
 
     nowave_ostia = nowave_hr - ostia_interp
 
-    #calculate min and max of each difference fo use later in plotting
-    wnow_min = wave_no.min().values
-    wnow_max = wave_no.max().values
+    #calculate min and max of each difference fo use for constant color bars across the same calculation 
+    wnow_min, wnow_max = cbar_range(wave_no)
+    wnow_step = (wnow_max - wnow_min) / 10
+    wnow_levels = np.arange(wnow_min, wnow_max + wnow_step, wnow_step) # levels for the contour plot
 
-    ow_min = wave_ostia.min().values
-    ow_max = wave_ostia.max().values
+    ow_min, ow_max = cbar_range(wave_ostia)
+    ow_step = (ow_max - ow_min) / 10
+    ow_levels = np.arange(ow_min, ow_max + ow_step, ow_step)
 
-    onow_min = nowave_ostia.min().values
-    onow_max = nowave_ostia.max().values
+    onow_min, onow_max = cbar_range(nowave_ostia)
+    onow_step = (onow_max - onow_min) / 10
+    onow_levels = np.arange(onow_min, onow_max + onow_step, onow_step)
 
-    print(wnow_min)
-    print(wnow_max)
+    print(ow_min)
+    print(ow_max)
 
     #use slice() to put data into non calendar weekly subsets
     wnow1 = wave_no.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
@@ -106,27 +129,31 @@ def main():
     plts_wnow = []
 
     for i in range(0, NCOLS):
-        p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max)
+        p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], levels = wnow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max, extend = "both")
         axs[0][i].coastlines()
         plts_wnow.append(p)
 
-    plt.colorbar(ax = axs[0, :], location = "bottom")
+    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "bottom")
     
     #plot wave vs ostia differences
     plts_ow = []
 
     for j in range(0, NCOLS):
-        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = ow_min, vmax = ow_max)
+        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = ow_min, vmax = ow_max, extend = "both")
         axs[1][j].coastlines()
         plts_ow.append(p)
+
+    fig.colorbar(plts_ow[0], ax = axs[1, :].ravel().tolist(), location = "bottom")
 
     #plot now wave vs ostia differences 
     plts_onow = []
 
     for k in range(0, NCOLS):
-        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = onow_min, vmax = onow_max)
+        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = onow_min, vmax = onow_max, extend = "both")
         axs[2][k].coastlines()
         plts_onow.append(p)
+
+    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "bottom")
 
     plt.savefig("bigcomp_15.png")
 
