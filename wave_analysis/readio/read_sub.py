@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+############################
+#Author: Lucas Jones, Hollings Scholar Intern at NOAA EMC
+#Date: 6/24/24
+############################
+
+#This method reads in a netcdf file at a given path and subsets it to a particular variable 
+
 import xarray as xr
 
 def read_sub(filepath, variable)
