@@ -12,11 +12,11 @@
 #SBATCH -t 05:00
 
 import sys
-sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio")
+sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
 
 from readio import hello
 
-def main()
+def main():
     
     hello.hello()
 
