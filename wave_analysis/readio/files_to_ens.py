@@ -19,11 +19,14 @@
 #This program reads in an arbitrary number of netcdf datasets at onetime, subsetting them using a another function, and then takes the ensemble mean and returns it as a single, separate file.  
 #Be careful using overlarge datasets.
 
+import sys
+sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio")
+
 import ens_mean as em
 import read_sub as rs
 import xarray as xr
 
-def files_to_ens(*filepaths, variable, out_name):
+def files_to_ens(variable, out_name, *filepaths):
 
     #for each file in the group of file paths iteratively open it, subtset, and add it to a list of subsetted files. closing the io channel for each dynamically
 
