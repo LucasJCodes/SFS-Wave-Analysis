@@ -24,6 +24,7 @@ def read_sub(filepath, variable)
     while True:
         try:
             ds = ds_in[variable]
+            ds_in.close()
             break
 
         except TypeError, NameError, ValueError:
