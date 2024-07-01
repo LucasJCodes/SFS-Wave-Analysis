@@ -9,7 +9,7 @@
 
 import xarray as xr
 
-def read_sub(filepath, variable)
+def read_sub(filepath, variable):
 
     #try to read in the data
     while True:
@@ -17,7 +17,7 @@ def read_sub(filepath, variable)
             ds_in = xr.open_mfdataset(filepath)
             break
 
-        except TypeError, NameError, ValueError:
+        except (TypeError, NameError, ValueError):
             print("Invalid path specified")
     
     #subset the data
@@ -27,7 +27,7 @@ def read_sub(filepath, variable)
             ds_in.close()
             break
 
-        except TypeError, NameError, ValueError:
+        except (TypeError, NameError, ValueError):
             print("Variable to subset by invalid or not found")
 
     return ds
