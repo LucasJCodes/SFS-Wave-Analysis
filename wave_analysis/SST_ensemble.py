@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-#SBATCH -J total_precip.py
-#SBATCH -o out_totalp
-#SBATCH -e error_totalp
+#SBATCH -J SST_ensemble.py
+#SBATCH -o SST_ens_out
+#SBATCH -e SST_ens_error
 #SBATCH -q debug
 #SBATCH -A marine-cpu
 #SBATCH --ntasks=1
@@ -19,6 +19,10 @@
 #This program calls functions to create a single file wth the ensemble mean of model outputted SSTs for 
 #the 6 conditions(with and without waves, for years 1997, 2015, 2020)
 
+import sys
+sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis")
+
+from readio import files_to_ens as fe
 import xarray as xr
 
 def main():
@@ -39,7 +43,7 @@ def main():
         #no waves 2020
 
     #call the method to handle ensemble file creation for each grouping
-    w1997_ens = files_to_ens(w1997mem0, w1997mem1)
+    w1997_ens = fe.files_to_ens("WTMP_surface", "SST1997_ensemble.nc", w1997mem0, w1997mem1)
 
 if __name__ == "__main__":
     main()
