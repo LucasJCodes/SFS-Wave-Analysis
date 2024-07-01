@@ -17,9 +17,13 @@
 ############################
 
 #This function calculates an ensemble mean of an arbitrary number of datasets
+import xarray as xr
+
 def ens_mean(*datasets):
     
-    #
+    #calculate the mean of the datasets, assigning them to one other single dataset
+    ens = sum(datasets)/ len(datasets)
 
-def main():
+    print(ens)
 
+    return ens
