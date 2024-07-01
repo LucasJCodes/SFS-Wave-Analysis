@@ -19,7 +19,13 @@
 #This program graphs ensemble mean wave - no wave differences in SSTs for 4 selected weeks 
 def main():
 
-    #the filepath for each dataset
+    #the filepath for each dataset in the ensemble
+
+    #read, subset, and calculate ensemble mean
+
+    #subset into weekly periods and calculate the mean for each week
+
+    #plot
 
 if __name__ == "__main__":
     main()
