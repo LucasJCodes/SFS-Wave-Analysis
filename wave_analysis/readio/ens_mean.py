@@ -16,5 +16,10 @@
 #Date: 6/24/24
 ############################
 
+#This function calculates an ensemble mean of an arbitrary number of datasets
 def ens_mean(*datasets):
+    
+    #
+
+def main():
 
