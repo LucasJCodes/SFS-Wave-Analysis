@@ -16,8 +16,8 @@
 #Date: 6/24/24
 ############################
 
-#This program calls functions to create a single file wth the ensemble mean of model outputted SSTs for 
-#the 6 conditions(with and without waves, for years 1997, 2015, 2020)
+#This program calls functions to create 6 files  with the ensemble mean of model outputted SSTs for 
+#each of the 6 conditions respectively (with and without waves, for years 1997, 2015, 2020)
 
 import sys
 sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis")
