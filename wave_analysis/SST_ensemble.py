@@ -43,9 +43,9 @@ def main():
         #no waves 2020
 
     #call the method to handle ensemble file creation for each grouping
-    w1997_ens = fe.files_to_ens("WTMP_surface", "SST1997w_ensemble.nc", w1997mem0, w1997mem1)
+    fe.files_to_ens("WTMP_surface", "SST1997w_ensemble.nc", w1997mem0, w1997mem1)
 
-    now1997_ens = fe.files_to_ens("WTMP_surface", "SST1997now_ensemble.nc", now1997mem0, now1997mem1)
+    fe.files_to_ens("WTMP_surface", "SST1997now_ensemble.nc", now1997mem0, now1997mem1)
 
 if __name__ == "__main__":
     main()
