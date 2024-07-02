@@ -38,7 +38,7 @@ def files_to_ens(variable, out_name, *filepaths):
     #once files are read in and subsetted, calculate the ensemble mean
     ens = em.ens_mean(data_list)
 
-    ens.to_netcdf(path = ("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/") + out_name, mode = "w")
+    ens.to_netcdf(path = ("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/" + out_name), mode = "w")
 
 if __name__ == "__main__":
     main()
