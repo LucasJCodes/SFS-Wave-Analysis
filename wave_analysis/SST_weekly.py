@@ -54,9 +54,19 @@ def main():
     
     ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][0].coastlines()
-    axs[0][0].set_title("Nov 1-7", loc = "left", pad = 4.0, fontsize = 10)
+    axs[0][0].set_title("Nov. 1-7, 1997", loc = "left")
 
     ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree())
+    axs[0][1].coastlines()
+    axs[0][1].set_title("Nov. 8-14, 1997", loc = "left")
+
+    ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, transform = ccrs.PlateCarree())
+    axs[1][0].coastlines()
+    axs[1][0].set_title("Jan. 16-22, 1998", loc = "left")
+
+    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, transform = ccrs.PlateCarree())
+    axs[1][1].coastlines()
+    axs[1][1].set_title("Jan. 23-29, 1998", loc = "left")
 
     plt.savefig("SST_weekly.png")
 
