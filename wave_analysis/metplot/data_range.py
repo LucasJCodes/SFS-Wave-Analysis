@@ -8,6 +8,8 @@
 #Simple function to determine the maximum values of the data and then return a negative and 
 #positive version of that value to serve as the contour/colorbar limits of a data set (in this application).
 
+import numpy as np
+
 def data_range(dataset):
 
     vmin = np.nan
