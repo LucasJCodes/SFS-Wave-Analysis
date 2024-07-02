@@ -23,7 +23,6 @@ import sys
 sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis")
 
 from readio import files_to_ens as fe
-import xarray as xr
 
 def main():
     
