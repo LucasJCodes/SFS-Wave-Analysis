@@ -18,6 +18,8 @@
 
 #this takes ensemble mean precipitation data with and without waves and plots the difference in total precipitation
 
+import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
 import xarray as xr
 
 def main():
@@ -46,7 +48,18 @@ def main():
     print(diff)
 
     #plot the toal precipitation for each and the difference
+    fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
+    p1 = axs[0].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree())
+    axs[0].coastlines()
+
+    p2 = axs[1].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree())
+    axs[1].coastlines()
+
+    p3 = axs[2].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[2].coastlines()
+
+    plt.savefig("precip_total.png")
 
 if __name__ == "__main__":
     main()
