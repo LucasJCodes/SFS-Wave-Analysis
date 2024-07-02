@@ -72,17 +72,17 @@ def main():
 
     p1 = axs[0].contourf(total_waves.longitude, total_waves.latitude, total_waves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), extend = "max")
     axs[0].coastlines()
-    axs[0].set_title("With Waves")
+    axs[0].set_title("With Waves", loc = "left")
 
     p2 = axs[1].contourf(total_nowaves.longitude, total_nowaves.latitude, total_nowaves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), extend = "max")
     axs[1].coastlines()
-    axs[1].set_title("Without Waves")
+    axs[1].set_title("Without Waves", loc = "left")
 
     fig.colorbar(p1, ax = axs[0:2].ravel().tolist(), extend = "max", label = "inches of rain")
 
     p3 = axs[2].contourf(diff.longitude, diff.latitude, diff, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[2].coastlines()
-    axs[2].set_title("Waves - No Waves")
+    axs[2].set_title("Waves - No Waves", loc = "left")
 
     fig.colorbar(p3, ax = axs[2], extend = "both", label = "Difference in inches")
 
