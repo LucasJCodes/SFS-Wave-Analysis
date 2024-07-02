@@ -28,16 +28,16 @@ def main():
 
     #file paths for each condition
     #waves 1997
-    w1997mem0 = 
-    w1997mem1 = 
+    w1997mem0 = "/work2/noaa/marine/ljones/90day_experiments/waves/IC1997/COMROOT/IC1997/gefs.19971101/00/mem001/products/atmos/grib2/1p00/gefs.t00z.pgrb2b.1p00.f*" 
+    w1997mem1 = "/work2/noaa/marine/ljones/90day_experiments/waves/IC1997/COMROOT/IC1997/gefs.19971101/00/mem002/products/atmos/grib2/1p00/gefs.t00z.pgrb2b.1p00.f*"
 
     #waves 2015
 
     #waves 2020
 
     #nowaves 1997
-    now1997mem0 = 
-    now1997mem1 = 
+    now1997mem0 = "/work2/noaa/marine/ljones/90day_experiments/no_waves/IC1997/COMROOT/IC1997/gefs.19971101/00/mem001/products/atmos/grib2/1p00/gefs.t00z.pgrb2b.1p00.f*"
+    now1997mem1 = "/work2/noaa/marine/ljones/90day_experiments/no_waves/IC1997/COMROOT/IC1997/gefs.19971101/00/mem002/products/atmos/grib2/1p00/gefs.t00z.pgrb2b.1p00.f*"
 
     #nowaves 2015
 
