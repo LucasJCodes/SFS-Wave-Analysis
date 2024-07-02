@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-#Simple function to determine the contour range for a sysmetrical matplotlib colorbar that is shared by multiple plots
-
 ############################
 #Author: Lucas Jones, Hollings Scholar Intern at NOAA EMC
 #Date: 7/2/24
 ############################
+
+#Simple function to determine the range for a sysmetrical matplotlib colorbar that is shared by multiple plots.
+#Used for difference plots in this application.
 
 def cbar_range(dataset):
 
