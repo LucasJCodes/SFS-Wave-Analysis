@@ -18,7 +18,12 @@
 
 #This program graphs ensemble mean wave - no wave differences in SSTs for 4 selected weeks 
 
+import sys
+sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
+
+from metplot import data_range
 import cartopy.crs as ccrs
+from metplot import cont_levels
 import matplotlib.pyplot as plt
 import xarray as xr
 
@@ -49,24 +54,33 @@ def main():
     print(week3)
     print(week4)
 
+    #find overall data min and max for consistent contours and single colorbar
+    vmin, vmax = data_range.data_range(diff)
+
+    levs = cont_levels.cont_levels(vmin, vmax, 10)
+
     #plot
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
     
-    ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][0].coastlines()
     axs[0][0].set_title("Nov. 1-7, 1997", loc = "left")
 
-    ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree())
+    ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][1].coastlines()
     axs[0][1].set_title("Nov. 8-14, 1997", loc = "left")
 
-    ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, transform = ccrs.PlateCarree())
+    ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][0].coastlines()
     axs[1][0].set_title("Jan. 16-22, 1998", loc = "left")
 
-    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, transform = ccrs.PlateCarree())
+    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[1][1].coastlines()
     axs[1][1].set_title("Jan. 23-29, 1998", loc = "left")
+    
+    plt.colorbar(ax4, ax = axs, location = "bottom", label = "deg C", extend = "both", pad = 0.05)
+
+    fig.suptitle("Difference in Sea Surface Temperatures")
 
     plt.savefig("SST_weekly.png")
 
