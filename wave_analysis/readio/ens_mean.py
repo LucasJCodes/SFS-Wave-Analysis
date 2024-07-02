@@ -24,6 +24,6 @@ def ens_mean(list_of_datasets):
     #calculate the mean of the datasets, assigning them to one other single dataset
     ens = sum(list_of_datasets) / len(list_of_datasets)
 
-    print(ens)
+    print(ens["time"])
 
     return ens
