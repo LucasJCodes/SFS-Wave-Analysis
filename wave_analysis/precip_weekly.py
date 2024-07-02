@@ -18,11 +18,13 @@
 
 #this takes ensemble mean precipitation data with and without waves and plots the difference in total precipitation
 
+import xarray as xr
+
 def main():
     
     #file paths for wave and non wave precip ensemble means
-    waves_path = 
-    nowaves_path = 
+    waves_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/precip1997w_ensemble.nc"
+    nowaves_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/precip1997now_ensemble.nc"
 
     #open and subset the wave data first
     waves_in = xr.open_mfdataset(waves_path)
@@ -44,7 +46,7 @@ def main():
     #calculate the difference 
     diff = total_waves - total_nowaves
 
-
+    print("difference", diff)
 
 
 if __name__ == "__main__":
