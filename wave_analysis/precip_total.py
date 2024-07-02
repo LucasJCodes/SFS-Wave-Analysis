@@ -78,13 +78,15 @@ def main():
     axs[1].coastlines()
     axs[1].set_title("Without Waves")
 
-    fig.colorbar(p1, ax = axs[0:2].ravel().tolist())
+    fig.colorbar(p1, ax = axs[0:2].ravel().tolist(), location = "bottom", extend = "right")
 
     p3 = axs[2].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[2].coastlines()
     axs[2].set_title("Waves - No Waves")
 
-    fig.suptitle("Total Precipitation (in) Comparison")
+    fig.colorbar(p3, location = "bottom", extend = "both")
+
+    fig.suptitle("Total Precipitation Comparison")
 
     plt.savefig("precip_total.png")
 
