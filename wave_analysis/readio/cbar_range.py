@@ -5,8 +5,8 @@
 #Date: 7/2/24
 ############################
 
-#Simple function to determine the range for a sysmetrical matplotlib colorbar that is shared by multiple plots.
-#Used for difference plots in this application.
+#Simple function to determine the maximum values of the data and then return a negative and 
+#positive version of that value to serve as the contour/colorbar limits of a data set (in this application).
 
 def cbar_range(dataset):
 
