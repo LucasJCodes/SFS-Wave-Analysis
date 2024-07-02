@@ -24,21 +24,26 @@ def main():
 
     #the filepath for the ensemble mean SST data
     waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/SST1997w_ensemble.nc"
-    #nowaves = 
+    nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/SST1997now_ensemble.nc" 
 
     #read in data
-    waves_in = xr.open_mfdataset(waves)- 273.15  #convert to deg C
+    waves_in = xr.open_mfdataset(waves) - 273.15  #convert to deg C
     waves = waves_in.sel(time = (waves_in.time.dt.hour == 12))
 
-    print(waves["time"])
+    nowaves_in = xr.open_mfdataset(nowaves) - 273.15 #convert to deg C
+    nowaves = nowaves_in.sel(time = (nowaves_in.time.dt.hour == 12))
 
+    print(waves)
+    print(nowaves)
 
     #calculate the difference between waves and no waves
-    #diff = waves_in - nowaves_in
+    diff = waves_in - nowaves_in
 
     #subset into weekly periods (the first two and last two weeks of the period) and calculate the mean for each week
-    #week1 = diff.sel(time = slice("1997-11-01", "1997-11-07"))
-    #week2 = diff.sel(time = slice("1997-11-08", "1997-11-14"))
+    week1 = diff.sel(time = slice("1997-11-01", "1997-11-07"))
+    week2 = diff.sel(time = slice("1997-11-08", "1997-11-14"))
+    week3 = diff.sel(time = slice("1998-01-16", "1997-01-22"))
+    week4 = diff.sel(time = slice("1998-01-23", "1997-01-29"))
 
     #plot
 
