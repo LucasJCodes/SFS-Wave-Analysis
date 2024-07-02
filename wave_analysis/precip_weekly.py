@@ -37,8 +37,14 @@ def main():
     print(waves)
     print(nowaves)
 
-    #calculate the difference
-    diff = waves - nowaves
+    #find the sum total precipitation for each data set
+    total_waves = waves.sum(dim = "time")
+    total_nowaves = nowaves.sum(dim = "time")
+
+    #calculate the difference 
+    diff = total_waves - total_nowaves
+
+
 
 
 if __name__ == "__main__":
