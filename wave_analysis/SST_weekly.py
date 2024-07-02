@@ -29,20 +29,20 @@ def main():
     nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/SST1997now_ensemble.nc" 
 
     #read in data
-    waves_in = xr.open_mfdataset(waves) - 273.15  #convert to deg C
+    waves_in = xr.open_mfdataset(waves)["WTMP_surface"] - 273.15  #convert to deg C
     waves = waves_in.sel(time = (waves_in.time.dt.hour == 12))  #only the 12z times
 
-    nowaves_in = xr.open_mfdataset(nowaves) - 273.15 #convert to deg C
+    nowaves_in = xr.open_mfdataset(nowaves)["WTMP_surface"] - 273.15 #convert to deg C
     nowaves = nowaves_in.sel(time = (nowaves_in.time.dt.hour == 12)) #only the 12z times
 
     #calculate the difference between waves and no waves
     diff = waves - nowaves
 
     #subset into weekly periods (the first two and last two weeks of the period) and calculate the mean for each week (and make datarray for graphing but selecing var)
-    week1 = diff.sel(time = slice("1997-11-01", "1997-11-07")).mean(dim = "time")["WTMP_surface"]
-    week2 = diff.sel(time = slice("1997-11-08", "1997-11-14")).mean(dim = "time")["WTMP_surface"]
-    week3 = diff.sel(time = slice("1998-01-16", "1998-01-22")).mean(dim = "time")["WTMP_surface"]
-    week4 = diff.sel(time = slice("1998-01-23", "1998-01-29")).mean(dim = "time")["WTMP_surface"]
+    week1 = diff.sel(time = slice("1997-11-01", "1997-11-07")).mean(dim = "time")
+    week2 = diff.sel(time = slice("1997-11-08", "1997-11-14")).mean(dim = "time")
+    week3 = diff.sel(time = slice("1998-01-16", "1998-01-22")).mean(dim = "time")
+    week4 = diff.sel(time = slice("1998-01-23", "1998-01-29")).mean(dim = "time")
 
     print(week1)
     print(week2)
@@ -55,6 +55,8 @@ def main():
     ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][0].coastlines()
     axs[0][0].set_title("Nov 1-7", loc = "left", pad = 4.0, fontsize = 10)
+
+    ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree())
 
     plt.savefig("SST_weekly.png")
 
