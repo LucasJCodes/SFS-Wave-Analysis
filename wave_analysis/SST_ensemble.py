@@ -37,13 +37,16 @@ def main():
         #waves 2020
 
         #no waves 1997
-
+    now1997mem0 = "/work2/noaa/marine/ljones/90day_experiments/no_waves/IC1997/COMROOT/IC1997/gefs.19971101/00/mem001/products/ocean/grib2/1p00/gefs.ocean.t00z.1p00.f*.grib2.nc"
+    now1997mem1 = "/work2/noaa/marine/ljones/90day_experiments/no_waves/IC1997/COMROOT/IC1997/gefs.19971101/00/mem002/products/ocean/grib2/1p00/gefs.ocean.t00z.1p00.f*.grib2.nc"
         #no waves 2015
 
         #no waves 2020
 
     #call the method to handle ensemble file creation for each grouping
-    w1997_ens = fe.files_to_ens("WTMP_surface", "SST1997_ensemble.nc", w1997mem0, w1997mem1)
+    w1997_ens = fe.files_to_ens("WTMP_surface", "SST1997w_ensemble.nc", w1997mem0, w1997mem1)
+
+    now1997_ens = fe.files_to_ens("WTMP_surface", "SST1997now_ensemble.nc", now1997mem0, now1997mem1)
 
 if __name__ == "__main__":
     main()
