@@ -18,7 +18,11 @@
 
 #this takes ensemble mean precipitation data with and without waves and plots the difference in total precipitation
 
+import sys
+sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
+
 import cartopy.crs as ccrs
+from metplot import cont_levels
 import matplotlib.pyplot as plt
 import xarray as xr
 
@@ -45,19 +49,42 @@ def main():
     #calculate the difference 
     diff = total_waves - total_nowaves
 
-    print(diff)
+    print(total_waves[50, 50].values)
+    print(total_nowaves[50, 50].values)
+    print(diff[50, 50].values)
+
+    #get max values so both total plots have same contour bins and colorbar range
+    vmin = 0  #assume the smallest amount of precip is 0
+
+    wmax = total_waves.max().values
+    nowmax = total_nowaves.max().values
+
+    if wmax > nowmax:
+        vmax = wmax
+
+    else:
+        vmax = nowmax
+
+    precip_levels = cont_levels.cont_levels(0, vmax, 10)
 
     #plot the toal precipitation for each and the difference
     fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    p1 = axs[0].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree())
+    p1 = axs[0].contourf(total_waves.longitude, total_waves.latitude, total_waves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
     axs[0].coastlines()
+    axs[0].set_title("With Waves")
 
-    p2 = axs[1].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree())
+    p2 = axs[1].contourf(total_waves.longitude, total_waves.latitude, total_waves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
     axs[1].coastlines()
+    axs[1].set_title("Without Waves")
+
+    fig.colorbar(p1, ax = axs[0:2].ravel().tolist())
 
     p3 = axs[2].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[2].coastlines()
+    axs[2].set_title("Waves - No Waves")
+
+    fig.suptitle("Total Precipitation (in) Comparison")
 
     plt.savefig("precip_total.png")
 
