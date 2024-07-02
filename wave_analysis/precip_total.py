@@ -21,6 +21,7 @@
 import sys
 sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
 
+from metplot import data_range
 import cartopy.crs as ccrs
 from metplot import cont_levels
 import matplotlib.pyplot as plt
@@ -49,10 +50,6 @@ def main():
     #calculate the difference 
     diff = total_waves - total_nowaves
 
-    print(total_waves[50, 50].values)
-    print(total_nowaves[50, 50].values)
-    print(diff[50, 50].values)
-
     #get max values so both total plots have same contour bins and colorbar range
     vmin = 0  #assume the smallest amount of precip is 0
 
@@ -67,24 +64,27 @@ def main():
 
     precip_levels = cont_levels.cont_levels(0, vmax, 10)
 
+    #get a symetric colorbar range for the diff plot
+    dmin, dmax = data_range.data_range(diff)
+
     #plot the toal precipitation for each and the difference
     fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    p1 = axs[0].contourf(total_waves.longitude, total_waves.latitude, total_waves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
+    p1 = axs[0].contourf(total_waves.longitude, total_waves.latitude, total_waves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), extend = "max")
     axs[0].coastlines()
     axs[0].set_title("With Waves")
 
-    p2 = axs[1].contourf(total_waves.longitude, total_waves.latitude, total_waves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
+    p2 = axs[1].contourf(total_nowaves.longitude, total_nowaves.latitude, total_nowaves, levels = precip_levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), extend = "max")
     axs[1].coastlines()
     axs[1].set_title("Without Waves")
 
-    fig.colorbar(p1, ax = axs[0:2].ravel().tolist(), location = "bottom", extend = "right")
+    fig.colorbar(p1, ax = axs[0:2].ravel().tolist(), extend = "max", label = "inches of rain")
 
-    p3 = axs[2].contourf(total_waves.longitude, total_waves.latitude, total_waves, transform = ccrs.PlateCarree(), cmap = "seismic")
+    p3 = axs[2].contourf(diff.longitude, diff.latitude, diff, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[2].coastlines()
     axs[2].set_title("Waves - No Waves")
 
-    fig.colorbar(p3, location = "bottom", extend = "both")
+    fig.colorbar(p3, ax = axs[2], extend = "both", label = "Difference in inches")
 
     fig.suptitle("Total Precipitation Comparison")
 
