@@ -16,8 +16,12 @@
 #Date: 7/2/24
 ############################
 
-import xarray as xr
+import cartopy.crs as ccrs
+from cartopy.util import add_cyclic_point
+import matplotlib.pyplot as plt
 import numpy as np
+from scipy import stats
+import xarray as xr
 
 def main():
 
@@ -34,8 +38,32 @@ def main():
     #calculate the difference between waves and no waves
     diff = waves - nowaves
 
-    print("waves ", np.var(waves).values)
-    print("no waves ", np.var(nowaves).values)
+    var_waves = np.var(waves).values
+    var_nowaves = np.var(nowaves).values
+
+    tstat, pval = stats.ttest_ind(waves, nowaves, axis = 0, equal_var = True, alternative = "two-sided")
+    
+    #create latitude and longitude arrays for the plotting the p values
+    lat = np.arange(-90, len(pval[:, 0]) - 90)
+    lon = np.arange(0, len(pval[0, :]))
+    
+    #create a data array holding the p values
+    xpval = xr.DataArray(pval, coords = {"latitude": lat, "longitude": lon}, dims = ["latitude", "longitude"])
+
+    xpval = xr.DataArray(add_cyclic_point(xpval))
+    print(xpval)
+    
+    #iget only statistically significant p values for plotting
+    sig_pval = xpval.where(xpval.values < 0.05)
+    print(sig_pval)
+    
+    #contour plot the p values
+    fig, ax = plt.subplots(subplot_kw = {"projection": ccrs.PlateCarree()})
+    ax.contourf(sig_pval.longitude, sig_pval.latitude, sig_pval, transform = ccrs.PlateCarree())
+    ax.coastlines()
+
+    plt.savefig("stat_sig.png")
+    
 
 if __name__ == "__main__":
     main()
