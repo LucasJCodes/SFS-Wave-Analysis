@@ -19,6 +19,7 @@
 import cartopy.crs as ccrs
 from cartopy.util import add_cyclic_point
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 from scipy import stats
 import xarray as xr
@@ -38,6 +39,7 @@ def main():
     #calculate the difference between waves and no waves
     diff = waves - nowaves
 
+    #perform the t test
     var_waves = np.var(waves).values
     var_nowaves = np.var(nowaves).values
 
@@ -49,16 +51,18 @@ def main():
     
     #create a data array holding the p values and add a cyclic point to remove blank line
     xpval = xr.DataArray(add_cyclic_point(pval), coords = {"latitude": lat, "longitude": lon}, dims = ["latitude", "longitude"])
-    print(xpval)
     
     #iget only statistically significant p values for plotting
     sig_pval = xpval.where(xpval.values < 0.05)
-    print(sig_pval)
     
     #contour plot the p values
+    mpl.rcParams["hatch.linewidth"] = 0.01
+
     fig, ax = plt.subplots(subplot_kw = {"projection": ccrs.PlateCarree()})
-    ax.contourf(sig_pval.longitude, sig_pval.latitude, sig_pval, transform = ccrs.PlateCarree())
+    p1 = ax.contourf(sig_pval.longitude, sig_pval.latitude, sig_pval, hatches = "....", transform = ccrs.PlateCarree())
     ax.coastlines()
+
+    plt.colorbar(p1, location = "bottom")
 
     plt.savefig("stat_sig.png")
     
