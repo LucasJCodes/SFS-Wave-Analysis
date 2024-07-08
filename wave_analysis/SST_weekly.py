@@ -30,18 +30,18 @@ import xarray as xr
 def main():
 
     #the filepath for the ensemble mean SST data
-    waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/SST1997w_ensemble.nc"
-    nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readio/SST1997now_ensemble.nc" 
+    waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST1997w_ensemble.nc" 
+    nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST1997now_ensemble.nc" 
 
     #read in data
     waves_in = xr.open_mfdataset(waves)["WTMP_surface"] - 273.15  #convert to deg C
-    waves = waves_in.sel(time = (waves_in.time.dt.hour == 12))  #only the 12z times
+    #waves = waves_in.sel(time = (waves_in.time.dt.hour == 12))  #only the 12z times
 
     nowaves_in = xr.open_mfdataset(nowaves)["WTMP_surface"] - 273.15 #convert to deg C
-    nowaves = nowaves_in.sel(time = (nowaves_in.time.dt.hour == 12)) #only the 12z times
+    #nowaves = nowaves_in.sel(time = (nowaves_in.time.dt.hour == 12)) #only the 12z times
 
     #calculate the difference between waves and no waves
-    diff = waves - nowaves
+    diff = waves_in - nowaves_in
 
     #subset into weekly periods (the first two and last two weeks of the period) and calculate the mean for each week (and make datarray for graphing but selecing var)
     week1 = diff.sel(time = slice("1997-11-01", "1997-11-07")).mean(dim = "time")
