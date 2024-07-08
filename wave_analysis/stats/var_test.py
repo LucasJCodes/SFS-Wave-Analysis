@@ -56,10 +56,10 @@ def main():
     sig_pval = xpval.where(xpval.values < 0.05)
     
     #contour plot the p values
-    mpl.rcParams["hatch.linewidth"] = 0.01
+    #mpl.rcParams["hatch.linewidth"] = 0.1
 
     fig, ax = plt.subplots(subplot_kw = {"projection": ccrs.PlateCarree()})
-    p1 = ax.contourf(sig_pval.longitude, sig_pval.latitude, sig_pval, hatches = "....", transform = ccrs.PlateCarree())
+    p1 = ax.contourf(sig_pval.longitude, sig_pval.latitude, sig_pval, hatches = "----", transform = ccrs.PlateCarree())
     ax.coastlines()
 
     plt.colorbar(p1, location = "bottom")
