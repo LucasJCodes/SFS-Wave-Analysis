@@ -28,7 +28,7 @@ import xarray as xr
 
 def files_to_ens(variable, out_name, *filepaths):
 
-    #for each file in the group of file paths iteratively open it, subtset, and add it to a list of subsetted files. closing the io channel for each dynamically
+    #for each directory of files in the group of file paths, iteratively open it, subtset, and add it to a list of subsetted files. close the io channel for each dynamically
 
     data_list = []
 
