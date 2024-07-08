@@ -38,6 +38,9 @@ def main():
 
     #separate into weekly periods for graphing
     850_week1 = 850_diff.sel(time = slice("1997-11-01"
+    850_week2 = 850_diff.sel(time = slice(
+    850_week3 = 850_diff.sel(time = slice(
+    850_week4 = 850_diff.sel(time = slice(
 
     #plot the differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
