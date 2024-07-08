@@ -27,8 +27,8 @@ def main():
     wave_in = xr.open_mfdataset(path_wave)
 
     #subset data to get 850 hPa heights only at 12z each day
-    nowave_850 = nowave_in["HGT_850mb"].sel(time = (nowave_in.time.dt.hour == 12))
-    wave_850 = wave_in["HGT_850mb"].sel(time = (wave_in.time.dt.hour == 12))
+    nowave_850 = nowave_in["HGT_850mb"] #.sel(time = (nowave_in.time.dt.hour == 12))
+    wave_850 = wave_in["HGT_850mb"] #.sel(time = (wave_in.time.dt.hour == 12))
 
     print(nowave_850)
     print(wave_850)
@@ -37,10 +37,10 @@ def main():
     850_diff = wave_850 - nowave_850
 
     #separate into weekly periods for graphing
-    850_week1 = 850_diff.sel(time = slice("1997-11-01"
-    850_week2 = 850_diff.sel(time = slice(
-    850_week3 = 850_diff.sel(time = slice(
-    850_week4 = 850_diff.sel(time = slice(
+    850_week1 = 850_diff.sel(time = slice("1997-11-01", "1997-11-07")).mean(dim = "time")
+    850_week2 = 850_diff.sel(time = slice("1997-11-08", "1997-11-14")).mean(dim = "time")
+    850_week3 = 850_diff.sel(time = slice("1997-11-15", "1997-11-21")).mean(dim = "time")
+    850_week4 = 850_diff.sel(time = slice("1997-11-22", "1997-11-28")).mean(dim = "time")
 
     #plot the differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
