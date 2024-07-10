@@ -64,25 +64,25 @@ def main():
     
     ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][0].coastlines()
-    axs[0][0].gridlines(draw_labels = True)
+    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[0][0].set_title("Nov. 1-7, " + YEAR, loc = "left")
 
     ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][1].coastlines()
-    axs[0][1].gridlines(draw_lables = True)
+    axs[0][1].gridlines(linestyle = "--", linewidth = 0.5)
     axs[0][1].set_title("Nov. 8-14, " + YEAR, loc = "left")
 
     ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][0].coastlines()
-    axs[1][0].gridlines(draw_labels = True)
+    axs[1][0].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[1][0].set_title("Nov. 15-21, " + YEAR, loc = "left")
 
     ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[1][1].coastlines()
-    axs[1][1].gridlines(draw_labels = True)
+    axs[1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
     axs[1][1].set_title("Nov. 22-18, " + YEAR, loc = "left")
     
-    plt.colorbar(ax4, ax = axs, location = "bottom", label = "deg C", extend = "both", pad = 0.05)
+    plt.colorbar(ax4, ax = axs, location = "bottom", label = "deg C", extend = "both", pad = 0.1)
 
     fig.suptitle("Difference in Sea Surface Temperatures")
 
