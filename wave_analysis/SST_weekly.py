@@ -51,35 +51,35 @@ def main():
     week3 = diff.sel(time = slice(YEAR + "-11-15", YEAR + "-11-21")).mean(dim = "time")
     week4 = diff.sel(time = slice(YEAR + "-11-22", YEAR + "-11-28")).mean(dim = "time")
 
-    print(week1)
-    print(week2)
-    print(week3)
-    print(week4)
+    print(nowaves_in)
 
     #find overall data min and max for consistent contours and single colorbar
-    vmin, vmax = data_range.data_range(diff)
+    vmin = -1.5
+    vmax = 1.5 #data_range.data_range(diff)
     
-    print("vmin: " + str(vmin) + " vmax: " + str(vmax))
-
-    levs = cont_levels.cont_levels(vmin, vmax, 10)
+    levs = cont_levels.cont_levels(vmin, vmax, 15)
 
     #plot
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
     
     ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][0].coastlines()
+    axs[0][0].gridlines(draw_labels = True)
     axs[0][0].set_title("Nov. 1-7, " + YEAR, loc = "left")
 
     ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][1].coastlines()
+    axs[0][1].gridlines(draw_lables = True)
     axs[0][1].set_title("Nov. 8-14, " + YEAR, loc = "left")
 
     ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][0].coastlines()
+    axs[1][0].gridlines(draw_labels = True)
     axs[1][0].set_title("Nov. 15-21, " + YEAR, loc = "left")
 
     ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[1][1].coastlines()
+    axs[1][1].gridlines(draw_labels = True)
     axs[1][1].set_title("Nov. 22-18, " + YEAR, loc = "left")
     
     plt.colorbar(ax4, ax = axs, location = "bottom", label = "deg C", extend = "both", pad = 0.05)
