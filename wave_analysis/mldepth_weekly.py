@@ -53,29 +53,35 @@ def main():
     week4 = diff.sel(time = slice(YEAR + "-11-22", YEAR + "-11-28")).mean(dim = "time")
 
     #find overall data min and max for consistent contours and single colorbar
-    vmin = 0
-    vmax = diff.max().values
+    vmin = -40
+    vmax = 40
 
     levels = cl.cont_levels(vmin, vmax, 15)
 
     #plot the differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
+    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[0][0].coastlines()
-    axs[0][0].set_title("Nov. 1-14, " + YEAR, loc = "left")
+    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[0][0].set_title("Nov 1-7, " + YEAR, loc = "left")
     
-    axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
+    axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][1].coastlines()
-    axs[0][1].set_title("Nov. 7-14, " + YEAR, loc = "left")
+    axs[0][1].gridlines(linestyle = "--", linewidth = 0.5)
+    axs[0][1].set_title("Nov. 8-14, " + YEAR, loc = "left")
 
-    axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
+    axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][0].coastlines()
+    axs[1][0].gridlines(draw_labels = {"left": "y", "bottom": "x"}, linestyle = "--", linewidth = 0.5)
     axs[1][0].set_title("Nov. 15-21, " + YEAR, loc = "left")
 
-    axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree())
+    axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][1].coastlines()
+    axs[1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
     axs[1][1].set_title("Nov. 22-28, " + YEAR, loc = "left")
+
+    plt.colorbar(p1, ax = axs, location = "bottom", extend = "both")
 
     plt.savefig("mldepth" + YEAR + "weekly.png")
 
