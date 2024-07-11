@@ -77,18 +77,19 @@ def main():
 
     nowave_ostia = nowave_ds - ostia_hr
 
-    #calculate min and max of each difference fo use for constant color bars across the same calculation 
+    #set min and max and created levels for  constant color bars across the same calculation 
     wnow_min = -1.5
-    wnow_max = 1.5  #hardcoding better range in 
-    #wnow_min, wnow_max = data_range.data_range(wave_no)
+    wnow_max = 1.5  #hardcoding better for visualization
 
     wnow_levels = cont_levels.cont_levels(wnow_min, wnow_max, 15)  # levels for the contour plot
     
-    ow_min, ow_max = data_range.data_range(wave_ostia)
-    ow_levels = cont_levels.cont_levels(ow_min, ow_max, 15)  #levels of the contour plot
+    #use the same hardcoded levels for both ostia difference sets
+    vmin = -5
+    vmax = 5
 
-    onow_min, onow_max = data_range.data_range(nowave_ostia)
-    onow_levels = cont_levels.cont_levels(onow_min, onow_max, 15)
+    ow_levels = cont_levels.cont_levels(vmin, vmax, 15)  #levels of the contour plot
+
+    onow_levels = cont_levels.cont_levels(vmin, vmax, 15)
 
     #use slice() to put data into non calendar weekly subsets
     wnow1 = wave_no.sel(time = slice(YEAR + "-11-01", YEAR + "-11-07")).mean(dim = "time")
@@ -119,31 +120,34 @@ def main():
         p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], levels = wnow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max, extend = "both")
         axs[0][i].set_title("Week {}".format(i + 1))
         axs[0][i].coastlines()
+        axs[0][i].gridlines(linestyle = "--", linewidth = 0.5)
         plts_wnow.append(p)
 
-    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "bottom", label = "Waves - No Waves, deg C")
+    axs[0][0].gridlines(draw_labels = {"left": "y"})
+    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "bottom", label = "deg C")
     
     #plot wave vs ostia differences
     plts_ow = []
 
     for j in range(0, NCOLS):
-        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], levels = ow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = ow_min, vmax = ow_max, extend = "both")
+        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], levels = ow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax, extend = "both")
         axs[1][j].set_title("Week {}".format(j + 1))
         axs[1][j].coastlines()
+        axs[1][j].gridlines(linestyle = "--", linewidth = 0.5)
         plts_ow.append(p)
-
-    fig.colorbar(plts_ow[0], ax = axs[1, :].ravel().tolist(), location = "bottom", label = "Waves - OSTIA, deg C")
 
     #plot now wave vs ostia differences 
     plts_onow = []
 
     for k in range(0, NCOLS):
-        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], levels = onow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = onow_min, vmax = onow_max, extend = "both")
+        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], levels = onow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax, extend = "both")
         axs[2][k].set_title("Week {}".format(k + 1))
         axs[2][k].coastlines()
+        axs[2][k].gridlines(linestyle = "--", linewidth = 0.5)
         plts_onow.append(p)
 
-    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "bottom", label = "No Waves - OSTIA, deg C")
+    #shared colorbar for both ostia difference sets
+    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "bottom", label = "deg C")
 
     fig.suptitle("GEFS SSTs w/ and w/o Waves Compared to OSTIA")
 
