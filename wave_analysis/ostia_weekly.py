@@ -35,28 +35,31 @@ import xesmf as xe
 
 def main():
 
-#constants holding the number of rows and columns in the final figure (used outside figure creation)
+    YEAR = "2015"
+    YEAR2 = "2016"
+
+    #constants holding the number of rows and columns in the final figure (used outside figure creation)
     NROWS = 3
     NCOLS = 4
 
-    ostia_path = "/work2/noaa/marine/jmeixner/ReferenceData/sst_OSTIA/1p00/daily/sst_OSTIA.20151*.1p00.nc" 
-    nowave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip1997now_ensemble.nc"
-    wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip1997w_ensemble.nc"
+    ostia_path = "/work2/noaa/marine/jmeixner/ReferenceData/sst_OSTIA/1p00/daily/sst_OSTIA.201*.1p00.nc" 
+    nowave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST" + YEAR + "now_ensemble.nc"
+    wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST" +  YEAR + "w_ensemble.nc"
 
     #read the data in
-    ostia_in = xr.open_mfdataset(ostia_path).sel(time = slice("2015-11-01", "2015-11-30"))  #cut it down to the same time length as the relevant model data
-    wave_in = xr.open_mfdataset(wave_path).rename({"yh": "lat", "xh": "lon"})
-    nowave_in = xr.open_mfdataset(nowave_path).rename({"yh": "lat", "xh": "lon"})
+    ostia_in = xr.open_mfdataset(ostia_path).sel(time = slice(YEAR + "-11-01", YEAR2 + "-01-30"))  #cut it down to the same time length as the relevant model data
+    wave_in = xr.open_mfdataset(wave_path).rename({"latitude": "lat", "longitude": "lon"})
+    nowave_in = xr.open_mfdataset(nowave_path).rename({"latitude": "lat", "longitude": "lon"})
 
-    #subset the model data to get SSTs, convert to Celsius if necessary 
-    ostia_ds = ostia_in["analysed_sst"] - 273.15 #deg C
-    wave_ds = wave_in["WTMP_surface"] - 273.16 #deg C
-    nowave_ds = nowave_in["WTMP_surface"] -273.15 #deg C
+    #subset the model data to get SSTs, convert to Celsius, and calculate daily mean for model output for comparison with ostia 
+    ostia_ds = (ostia_in["analysed_sst"] - 273.15) #deg C
+    wave_ds = (wave_in["WTMP_surface"] - 273.16).resample(time = "1D").mean()  #deg C
+    nowave_ds = (nowave_in["WTMP_surface"] -273.15).resample(time = "1D").mean() #deg C
+
+    print(wave_ds)
+    print(nowave_ds)
+    print(ostia_ds)
    
-    #put cftime indexes in datetime format for comparison with OSTIA data (in datetime)
-    wave_ds["time"] = wave_ds.indexes["time"].to_datetimeindex()
-    nowave_ds["time"] = nowave_ds.indexes["time"].to_datetimeindex()
-
     #interpolate the data using xesmf
     file_weights = 'regrid_weights.nc'
     if os.path.exists(file_weights):
@@ -65,44 +68,45 @@ def main():
         regridder = xe.Regridder(ostia_ds, wave_ds, 'nearest_s2d', reuse_weights=False, filename=file_weights)
     ostia_interp = regridder(ostia_ds)
 
-    #remove model outputs other than the 12z runs
-    wave_hr = wave_ds.isel(time = (wave_ds.time.dt.hour == 12))
-    nowave_hr = nowave_ds.isel(time = (nowave_ds.time.dt.hour == 12))
+    ostia_hr = ostia_interp.resample(time = "1D").first()
 
     #calculate differences for comparison plots
-    wave_no = wave_hr - nowave_hr
+    wave_no = wave_ds - nowave_ds
 
-    wave_ostia = wave_hr - ostia_interp
+    wave_ostia = wave_ds - ostia_hr
 
-    nowave_ostia = nowave_hr - ostia_interp
+    nowave_ostia = nowave_ds - ostia_hr
 
     #calculate min and max of each difference fo use for constant color bars across the same calculation 
-    wnow_min, wnow_max = data_range.data_range(wave_no)
-    wnow_levels = cont_levels.cont_levles(wnow_min, wnow_max, 10)  # levels for the contour plot
+    wnow_min = -1.5
+    wnow_max = 1.5  #hardcoding better range in 
+    #wnow_min, wnow_max = data_range.data_range(wave_no)
 
+    wnow_levels = cont_levels.cont_levels(wnow_min, wnow_max, 15)  # levels for the contour plot
+    
     ow_min, ow_max = data_range.data_range(wave_ostia)
-    ow_levels = cont_levels.cont_levels(ow_min, ow_max, 10)  #levels of the contour plot
+    ow_levels = cont_levels.cont_levels(ow_min, ow_max, 15)  #levels of the contour plot
 
     onow_min, onow_max = data_range.data_range(nowave_ostia)
-    onow_levels = cont_levels.cont_levels(onow_min, onow_max, 10)
+    onow_levels = cont_levels.cont_levels(onow_min, onow_max, 15)
 
     #use slice() to put data into non calendar weekly subsets
-    wnow1 = wave_no.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
-    wnow2 = wave_no.sel(time = slice("2015-11-08", "2015-11-14")).mean(dim = "time")
-    wnow3 = wave_no.sel(time = slice("2015-11-18", "2015-11-24")).mean(dim = "time")
-    wnow4 = wave_no.sel(time = slice("2015-11-25", "2015-12-01")).mean(dim = "time")
+    wnow1 = wave_no.sel(time = slice(YEAR + "-11-01", YEAR + "-11-07")).mean(dim = "time")
+    wnow2 = wave_no.sel(time = slice(YEAR + "-11-08", YEAR + "-11-14")).mean(dim = "time")
+    wnow3 = wave_no.sel(time = slice(YEAR + "-11-18", YEAR + "-11-24")).mean(dim = "time")
+    wnow4 = wave_no.sel(time = slice(YEAR + "-11-25", YEAR + "-12-01")).mean(dim = "time")
     wnow_arr = [wnow1, wnow2, wnow3, wnow4]
 
-    ow1 = wave_ostia.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
-    ow2 = wave_ostia.sel(time = slice("2015-11-08", "2015-11-14")).mean(dim = "time")
-    ow3 = wave_ostia.sel(time = slice("2015-11-18", "2015-11-24")).mean(dim = "time")
-    ow4 = wave_ostia.sel(time = slice("2015-11-25", "2015-12-01")).mean(dim = "time")
+    ow1 = wave_ostia.sel(time = slice(YEAR + "-11-01", YEAR + "-11-07")).mean(dim = "time")
+    ow2 = wave_ostia.sel(time = slice(YEAR + "-11-08", YEAR + "-11-14")).mean(dim = "time")
+    ow3 = wave_ostia.sel(time = slice(YEAR + "-11-18", YEAR + "-11-24")).mean(dim = "time")
+    ow4 = wave_ostia.sel(time = slice(YEAR + "-11-25", YEAR + "-12-01")).mean(dim = "time")
     ow_arr = [ow1, ow2, ow3, ow4]
 
-    onow1 = nowave_ostia.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
-    onow2 = nowave_ostia.sel(time = slice("2015-11-08", "2015-11-14")).mean(dim = "time")
-    onow3 = nowave_ostia.sel(time = slice("2015-11-18", "2015-11-24")).mean(dim = "time")
-    onow4 = nowave_ostia.sel(time = slice("2015-11-25", "2015-12-01")).mean(dim = "time")
+    onow1 = nowave_ostia.sel(time = slice(YEAR + "-11-01", YEAR + "-11-07")).mean(dim = "time")
+    onow2 = nowave_ostia.sel(time = slice(YEAR + "-11-08", YEAR + "-11-14")).mean(dim = "time")
+    onow3 = nowave_ostia.sel(time = slice(YEAR + "-11-18", YEAR + "-11-24")).mean(dim = "time")
+    onow4 = nowave_ostia.sel(time = slice(YEAR + "-11-25", YEAR + "-12-01")).mean(dim = "time")
     onow_arr = [onow1, onow2, onow3, onow4]
 
     #set up figure for the plots
@@ -143,7 +147,7 @@ def main():
 
     fig.suptitle("GEFS SSTs w/ and w/o Waves Compared to OSTIA")
 
-    plt.savefig("ostia_weekly.png")
+    plt.savefig("ostia" + YEAR + "weekly.png")
 
 if __name__ == "__main__":
     main()
