@@ -16,15 +16,29 @@
 #Date: 7/2/24
 ############################
 
+#This program plots differences in weekly mean 850 hPa heights, waves - no waves, for 
+# one of the 3 initial condition dates (1997, 2015, 2020).
+
+import sys
+sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
+
+from metplot import data_range
+import cartopy.crs as ccrs
+from metplot import cont_levels
+import matplotlib.pyplot as plt
+import xarray as xr
+
 def main():
     
+    YEAR = "1997"
+
     #file path for the ensemble means
-    wave_path = 
-    nowave_path = 
+    wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/850Height1997w_ensemble.nc" 
+    nowave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/850Height1997now_ensemble.nc"
 
     #open the data
-    nowave_in = xr.open_mfdataset(path_nowave)
-    wave_in = xr.open_mfdataset(path_wave)
+    nowave_in = xr.open_mfdataset(nowave_path)
+    wave_in = xr.open_mfdataset(wave_path)
 
     #subset data to get 850 hPa heights only at 12z each day
     nowave_850 = nowave_in["HGT_850mb"] #.sel(time = (nowave_in.time.dt.hour == 12))
@@ -34,39 +48,46 @@ def main():
     print(wave_850)
 
     #calculate the difference 
-    850_diff = wave_850 - nowave_850
+    diff = wave_850 - nowave_850
 
     #separate into weekly periods for graphing
-    850_week1 = 850_diff.sel(time = slice("1997-11-01", "1997-11-07")).mean(dim = "time")
-    850_week2 = 850_diff.sel(time = slice("1997-11-08", "1997-11-14")).mean(dim = "time")
-    850_week3 = 850_diff.sel(time = slice("1997-11-15", "1997-11-21")).mean(dim = "time")
-    850_week4 = 850_diff.sel(time = slice("1997-11-22", "1997-11-28")).mean(dim = "time")
+    week1 = diff.sel(time = slice(YEAR + "-11-01", YEAR + "-11-07")).mean(dim = "time")
+    week2 = diff.sel(time = slice(YEAR + "-11-08", YEAR + "-11-14")).mean(dim = "time")
+    week3 = diff.sel(time = slice(YEAR + "-11-15", YEAR + "-11-21")).mean(dim = "time")
+    week4 = diff.sel(time = slice(YEAR + "-11-22", YEAR + "-11-28")).mean(dim = "time")
+
+    #set the range for the data so the contour levels and colorbar are the same
+    vmin, vmax = data_range.data_range(diff)
+
+    levels = cont_levels.cont_levels(vmin, vmax, 15)
 
     #plot the differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
-    fig.suptitle("Difference in 850hPa Geopotential Height (waves - w/o waves)", fontsize = 12)
-    plt.subplots_adjust(wspace = 0.10, hspace = 0.0001)
+    fig.suptitle("Difference in 850hPa Geopotential Height (waves - no waves)", fontsize = 12)
 
-    ax1 = axs[0][0].contourf(diff1.longitude, diff1.latitude, diff1, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][0].coastlines()
-    axs[0][0].set_title("Nov 1-7", loc = "left", pad = 4.0, fontsize = 10)
+    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[0][0].set_title("Nov. 1-7, " + YEAR, loc = "left")
 
-    ax2 = axs[0][1].contourf(diff2.longitude, diff2.latitude, diff2, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[0][1].coastlines()
-    axs[0][1].set_title("Nov. 8-14", loc = "left", pad = 4.0, fontsize = 10)
+    axs[0][1].gridlines(linestyle = "--", linewidth = 0.5)
+    axs[0][1].set_title("Nov. 8-14, " + YEAR, loc = "left")
 
-    ax3 = axs[1][0].contourf(diff3.longitude, diff3.latitude, diff3, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][0].coastlines()
-    axs[1][0].set_title("Nov. 18-24", loc = "left", pad = 4.0, fontsize = 10)
+    axs[1][0].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[1][0].set_title("Nov. 15-21, " + YEAR, loc = "left")
 
-    ax4 = axs[1][1].contourf(diff4.longitude, diff4.latitude, diff4, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1][1].coastlines()
-    axs[1][1].set_title("Nov. 25-Dec 1", loc = "left", pad = 4.0, fontsize = 10)
+    axs[1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
+    axs[1][1].set_title("Nov. 22-28, " + YEAR, loc = "left")
 
-    cax = fig.add_axes([0.2, 0.1, 0.6, 0.04])
-    plt.colorbar(ax4, cax = cax, extend = "both", orientation = "horizontal", label = "meters")
+    plt.colorbar(ax4, ax = axs, extend = "both", orientation = "horizontal", label = "meters")
 
-    plt.savefig("pres850_comp.png")
+    plt.savefig("850height" + YEAR + "weekly.png")
 
 
 if __name__ == "__main__":
