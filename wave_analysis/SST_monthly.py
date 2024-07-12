@@ -54,30 +54,30 @@ def main():
     month3 = diff.sel(time = slice(YEAR2 + "-01-01", YEAR2 + "-01-30")).mean(dim = "time")
 
     #find overall data min and max for consistent contours and single colorbar
-    vmin = -1.5
-    vmax = 1.5 #data_range.data_range(diff)
+    vmin = -2.0
+    vmax = 2.0
 
     levs = cont_levels.cont_levels(vmin, vmax, 15)
 
     #plot
     fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    ax1 = axs[0][0].contourf(month1.longitude, month1.latitude, month1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
-    axs[0][0].coastlines()
-    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
-    axs[0][0].set_title("November " + YEAR, loc = "left")
+    ax1 = axs[0].contourf(month1.longitude, month1.latitude, month1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[0].coastlines()
+    axs[0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[0].set_title("November " + YEAR, loc = "left")
 
-    ax2 = axs[0][1].contourf(month2.longitude, month2.latitude, month2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
-    axs[0][1].coastlines()
-    axs[0][1].gridlines(linestyle = "--", linewidth = 0.5)
-    axs[0][1].set_title("December " + YEAR, loc = "left")
+    ax2 = axs[1].contourf(month2.longitude, month2.latitude, month2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[1].coastlines()
+    axs[1].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[1].set_title("December " + YEAR, loc = "left")
 
-    ax3 = axs[1][0].contourf(month3.longitude, month3.latitude, month3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
-    axs[1][0].coastlines()
-    axs[1][0].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
-    axs[1][0].set_title("January " + YEAR, loc = "left")
+    ax3 = axs[2].contourf(month3.longitude, month3.latitude, month3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
+    axs[2].coastlines()
+    axs[2].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[2].set_title("January " + YEAR, loc = "left")
 
-    plt.colorbar(ax3, ax = axs, location = "bottom", label = "deg C", extend = "both", pad = 0.1)
+    plt.colorbar(ax3, ax = axs, location = "right", label = "deg C", extend = "both")
 
     fig.suptitle("Difference in Sea Surface Temperatures")
 
