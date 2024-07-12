@@ -80,7 +80,7 @@ def main():
     axs[1][0].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[1][0].set_title("Nov. 15-21, " + YEAR, loc = "left")
 
-    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[1][1].coastlines()
     axs[1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
     axs[1][1].set_title("Nov. 22-28, " + YEAR, loc = "left")
