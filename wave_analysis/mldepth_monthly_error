@@ -1,0 +1,38 @@
+/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/pyproj/__init__.py:89: UserWarning: pyproj unable to set database path.
+  _pyproj_global_context_initialize()
+Traceback (most recent call last):
+  File "/var/spool/slurmd/job1914747/slurm_script", line 84, in <module>
+    main()
+  File "/var/spool/slurmd/job1914747/slurm_script", line 69, in main
+    axs[1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/cartopy/mpl/geoaxes.py", line 315, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/cartopy/mpl/geoaxes.py", line 359, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/cartopy/mpl/geoaxes.py", line 1666, in contourf
+    self.update_datalim(result.get_datalim(self.transData))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/matplotlib/collections.py", line 270, in get_datalim
+    paths = [transform.transform_path_non_affine(p) for p in paths]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/matplotlib/transforms.py", line 2436, in transform_path_non_affine
+    return self._a.transform_path_non_affine(path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/cartopy/mpl/geoaxes.py", line 186, in transform_path_non_affine
+    proj_geom = self.target_projection.project_geometry(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/cartopy/crs.py", line 817, in project_geometry
+    return getattr(self, method_name)(geometry, src_crs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/cartopy/crs.py", line 972, in _project_polygon
+    return self._rings_to_multi_polygon(rings, is_ccw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/cartopy/crs.py", line 1233, in _rings_to_multi_polygon
+    multi_poly = sgeom.MultiPolygon(polygon_bits)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nbarton/TOOLS/miniconda3/lib/python3.12/site-packages/shapely/geometry/multipolygon.py", line 79, in __new__
+    shell = ob[0]
+            ~~^^^
+TypeError: 'GeometryCollection' object is not subscriptable
