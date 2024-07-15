@@ -18,12 +18,21 @@
 
 #This program generates plots of weekly precipitation differences between SFS ensemble output data with and without waves.
 
+import sys
+sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
+
+from metplot import data_range
+import cartopy.crs as ccrs
+from metplot import cont_levels
+import matplotlib.pyplot as plt
+import xarray as xr
+
 def main():
 
     YEAR = "1997"
 
-    path_nowaves = 
-    path_waves = 
+    path_nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "now_ensemble.nc"
+    path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
 
     #open and subset the wave data first
     waves_in = xr.open_mfdataset(path_waves)
@@ -35,13 +44,17 @@ def main():
     nowaves = nowaves_in["APCP_surface"] * 1000 / 100**3 * 39.3701 #kg/m^2 to inches using water density 1 g/m^c
     nowaves_in.close()
 
+    print(waves_in)
+    print(nowaves_in)
+
     #calculate the difference
     diff = waves - nowaves
 
     #find the largest and smallest values for determing the colorbar range and contour levels
-    vmin, vmax = data_range(diff)
+    vmin = -2
+    vmax = 2
 
-    levels = cont_levels(vmin, vmax, 10)
+    levels = cont_levels.cont_levels(vmin, vmax, 15)
 
     #break into 4 weekly chunks for each dataset and average
     week1 = diff.sel(time = slice(YEAR + "-11-01", YEAR + "-11-07")).sum(dim = "time")
@@ -52,7 +65,7 @@ def main():
     #plot the weekly differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "seismic", levels = levels, vmin = vmin, vmax = vmax)
+    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "seismic", levels = levels, vmin = vmin, vmax = vmax, extend = "both")
     axs[0][0].set_title("Nov. 1-7, " + YEAR)
     axs[0][0].coastlines()
 
@@ -72,5 +85,5 @@ def main():
 
     plt.savefig("precip" + YEAR + "weekly.png")
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     main()
