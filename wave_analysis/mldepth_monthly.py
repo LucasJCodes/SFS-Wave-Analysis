@@ -29,8 +29,8 @@ import xarray as xr
 
 def main():
 
-    YEAR = "1997"
-    YEAR2 = "1998"
+    YEAR = "2015"
+    YEAR2 = "2016"
 
     #paths for the ensemble values
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/MLD" + YEAR + "w_ensemble.nc"
@@ -59,22 +59,22 @@ def main():
     levels = cl.cont_levels(vmin, vmax, 15)
 
     #plot the differences
-    fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
+    fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
-    axs[0][0].coastlines()
-    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
-    axs[0][0].set_title("November " + YEAR, loc = "left")
+    p1 = axs[0].contourf(week1.longitude, week1.latitude, week1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
+    axs[0].coastlines()
+    axs[0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[0].set_title("November " + YEAR, loc = "left")
     
-    axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
-    axs[0][1].coastlines()
-    axs[0][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
-    axs[0][1].set_title("December " + YEAR, loc = "left")
+    axs[1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[1].coastlines()
+    axs[1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
+    axs[1].set_title("December " + YEAR, loc = "left")
 
-    axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
-    axs[1][0].coastlines()
-    axs[1][0].gridlines(draw_labels = {"left": "y", "bottom": "x"}, linestyle = "--", linewidth = 0.5)
-    axs[1][0].set_title("January " + YEAR2, loc = "left")
+    axs[2].contourf(week3.longitude, week3.latitude, week3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[2].coastlines()
+    axs[2].gridlines(draw_labels = {"left": "y", "bottom": "x"}, linestyle = "--", linewidth = 0.5)
+    axs[2].set_title("January " + YEAR2, loc = "left")
 
     plt.colorbar(p1, ax = axs, location = "bottom", extend = "both")
 
