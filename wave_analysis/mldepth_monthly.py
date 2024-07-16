@@ -29,8 +29,8 @@ import xarray as xr
 
 def main():
 
-    YEAR = "2015"
-    YEAR2 = "2016"
+    YEAR = "1997"
+    YEAR2 = "1998"
 
     #paths for the ensemble values
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/MLD" + YEAR + "w_ensemble.nc"
@@ -53,8 +53,8 @@ def main():
     week3 = diff.sel(time = slice(YEAR2 + "-01-01", YEAR2 + "-01-31")).mean(dim = "time")
 
     #find overall data min and max for consistent contours and single colorbar
-    vmin = -60
-    vmax = 60
+    vmin = -80
+    vmax = 80
 
     levels = cl.cont_levels(vmin, vmax, 15)
 
@@ -68,7 +68,7 @@ def main():
     
     axs[1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
     axs[1].coastlines()
-    axs[1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
+    axs[1].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[1].set_title("December " + YEAR, loc = "left")
 
     axs[2].contourf(week3.longitude, week3.latitude, week3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
@@ -76,7 +76,7 @@ def main():
     axs[2].gridlines(draw_labels = {"left": "y", "bottom": "x"}, linestyle = "--", linewidth = 0.5)
     axs[2].set_title("January " + YEAR2, loc = "left")
 
-    plt.colorbar(p1, ax = axs, location = "bottom", extend = "both")
+    plt.colorbar(p1, ax = axs, location = "right", extend = "both")
 
     plt.savefig("mldepth" + YEAR + "monthly.png")
 
