@@ -53,13 +53,14 @@ def main():
     xpval = xr.DataArray(add_cyclic_point(pval), coords = {"latitude": lat, "longitude": lon}, dims = ["latitude", "longitude"])
     
     #iget only statistically significant p values for plotting
-    sig_pval = xpval.where(xpval.values < 0.05)
+    sig_pval = xpval.where(xpval.values <= 0.05)
     
     #contour plot the p values
-    #mpl.rcParams["hatch.linewidth"] = 0.1
+    mpl.rcParams["hatch.linewidth"] = 0.5
 
     fig, ax = plt.subplots(subplot_kw = {"projection": ccrs.PlateCarree()})
-    p1 = ax.contourf(sig_pval.longitude, sig_pval.latitude, sig_pval, hatches = "----", transform = ccrs.PlateCarree())
+    p1 = ax.contourf(sig_pval.longitude, sig_pval.latitude, sig_pval, hatches = ["/////"], transform = ccrs.PlateCarree())
+    ax.set_title("hatch = ['/////']")
     ax.coastlines()
 
     plt.colorbar(p1, location = "bottom")
