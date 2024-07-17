@@ -39,6 +39,3 @@ def files_to_ens(variable, out_name, filelist):
     ens = em.ens_mean(data_list)
 
     ens.to_netcdf(path = ("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/" + out_name), mode = "w")
-
-if __name__ == "__main__":
-    main()
