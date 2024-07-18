@@ -9,7 +9,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=0
-#SBATCH -t 05:00
+#SBATCH -t 10:00
 
 ############################
 #Author: Lucas Jones, Hollings Scholar Intern at NOAA EMC
@@ -35,14 +35,15 @@ import xesmf as xe
 
 def main():
 
-    YEAR = "2015"
-    YEAR2 = "2016"
+    YEAR = "2020"
+    YEAR2 = "2021"
+    OSTIA = "202*"
 
     #constants holding the number of rows and columns in the final figure (used outside figure creation)
     NROWS = 3
     NCOLS = 3
 
-    ostia_path = "/work2/noaa/marine/jmeixner/ReferenceData/sst_OSTIA/1p00/daily/sst_OSTIA.201*.1p00.nc" 
+    ostia_path = "/work2/noaa/marine/jmeixner/ReferenceData/sst_OSTIA/1p00/daily/sst_OSTIA." + OSTIA + ".1p00.nc" 
     nowave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST" + YEAR + "now_ensemble.nc"
     wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST" +  YEAR + "w_ensemble.nc"
 
@@ -84,8 +85,8 @@ def main():
     wnow_levels = cont_levels.cont_levels(wnow_min, wnow_max, 15)  # levels for the contour plot
     
     #use the same hardcoded levels for both ostia difference sets
-    vmin = -10
-    vmax = 10
+    vmin = -7.5
+    vmax = 7.5
 
     ow_levels = cont_levels.cont_levels(vmin, vmax, 15)  #levels of the contour plot
 
@@ -115,23 +116,23 @@ def main():
     month_list = ["November", "December", "January (1-30)"]
 
     for i in range(0, NCOLS):
-        p = axs[0][i].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], levels = wnow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max, extend = "both")
-        axs[0][i].set_title(month_list[i])
-        axs[0][i].coastlines()
-        axs[0][i].gridlines(linestyle = "--", linewidth = 0.5)
+        p = axs[i][0].contourf(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], levels = wnow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max, extend = "both")
+        axs[i][0].set_title(month_list[i])
+        axs[i][0].coastlines()
+        axs[i][0].gridlines(linestyle = "--", linewidth = 0.5)
         plts_wnow.append(p)
 
     axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
-    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "bottom", label = "deg C")
+    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "right", label = "deg C")
     
     #plot wave vs ostia differences
     plts_ow = []
 
     for j in range(0, NCOLS):
-        p = axs[1][j].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], levels = ow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax, extend = "both")
-        axs[1][j].set_title(month_list[j])
-        axs[1][j].coastlines()
-        axs[1][j].gridlines(linestyle = "--", linewidth = 0.5)
+        p = axs[j][1].contourf(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], levels = ow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax, extend = "both")
+        axs[j][1].set_title(month_list[j])
+        axs[j][1].coastlines()
+        axs[j][1].gridlines(linestyle = "--", linewidth = 0.5)
         plts_ow.append(p)
 
     axs[1][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
@@ -140,16 +141,16 @@ def main():
     plts_onow = []
 
     for k in range(0, NCOLS):
-        p = axs[2][k].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], levels = onow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax, extend = "both")
-        axs[2][k].set_title(month_list[k])
-        axs[2][k].coastlines()
-        axs[2][k].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
+        p = axs[k][2].contourf(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], levels = onow_levels, transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax, extend = "both")
+        axs[k][2].set_title(month_list[k])
+        axs[k][2].coastlines()
+        axs[k][2].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
         plts_onow.append(p)
 
     axs[2][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
 
     #shared colorbar for both ostia difference sets
-    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "bottom", label = "deg C")
+    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "right", label = "deg C")
 
     fig.suptitle("GEFS SSTs w/ and w/o Waves Compared to OSTIA")
 
