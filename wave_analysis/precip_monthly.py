@@ -21,16 +21,18 @@
 import sys
 sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
 
+from stats import monthly_ttest
 from metplot import data_range
 import cartopy.crs as ccrs
 from metplot import cont_levels
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import xarray as xr
 
 def main():
 
-    YEAR = "1997"
-    YEAR2 = "1998"
+    YEAR = "2020"
+    YEAR2 = "2021"
 
     path_nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "now_ensemble.nc"
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
@@ -62,18 +64,28 @@ def main():
     month2 = diff.sel(time = slice(YEAR + "-12-01", YEAR + "-12-31")).sum(dim = "time")
     month3 = diff.sel(time = slice(YEAR2 + "-01-01", YEAR2 + "-01-31")).sum(dim = "time")
 
+    #perform t testing to plot statistical significance
+    m1_pvals = monthly_ttest.monthly_ttest("APCP_surface", "1997", "11", 0.05)
+    m2_pvals = monthly_ttest.monthly_ttest("APCP_surface", "1997", "12", 0.05)
+    m3_pvals = monthly_ttest.monthly_ttest("APCP_surface", "1998", "01", 0.05)
+
+    mpl.rcParams["hatch.linewidth"] = 0.5
+
     #plot the weekly differences
     fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
     p1 = axs[0].contourf(month1.longitude, month1.latitude, month1, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax, extend = "both")
+    axs[0].contourf(m1_pvals.longitude, m1_pvals.latitude, m1_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[0].set_title("November " + YEAR)
     axs[0].coastlines()
 
     p2 = axs[1].contourf(month2.longitude, month2.latitude, month2, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax)
+    axs[1].contourf(m2_pvals.longitude, m2_pvals.latitude, m2_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[1].set_title("December " + YEAR)
     axs[1].coastlines()
 
     p3 = axs[2].contourf(month3.longitude, month3.latitude, month3, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax)
+    axs[2].contourf(m3_pvals.longitude, m3_pvals.latitude, m3_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[2].set_title("January " + YEAR2) 
     axs[2].coastlines()
 
