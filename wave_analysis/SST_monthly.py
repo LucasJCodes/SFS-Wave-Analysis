@@ -26,6 +26,8 @@ from metplot import data_range
 import cartopy.crs as ccrs
 from metplot import cont_levels
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+from stats import monthly_ttest
 import xarray as xr
 
 def main():
@@ -52,30 +54,42 @@ def main():
     month1 = diff.sel(time = slice(YEAR + "-11-01", YEAR + "-11-30")).mean(dim = "time")
     month2 = diff.sel(time = slice(YEAR + "-12-01", YEAR + "-12-31")).mean(dim = "time")
     month3 = diff.sel(time = slice(YEAR2 + "-01-01", YEAR2 + "-01-30")).mean(dim = "time")
-
+    
     #find overall data min and max for consistent contours and single colorbar
     vmin = -2.0
     vmax = 2.0
 
     levs = cont_levels.cont_levels(vmin, vmax, 15)
+    
+    #perform t testing to plot statistical significance
+    m1_pvals = monthly_ttest.monthly_ttest("SST", YEAR, "11", 0.05)
+    m2_pvals = monthly_ttest.monthly_ttest("SST", YEAR, "12", 0.05)
+    m3_pvals = monthly_ttest.monthly_ttest("SST", YEAR2, "01", 0.05)
+    
+    m1_pvals.to_netcdf(path = ("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/SSTtest.nc"), mode = "w")
+
+    mpl.rcParams["hatch.linewidth"] = 0.5
 
     #plot
     fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    ax1 = axs[0].contourf(month1.longitude, month1.latitude, month1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax1 = axs[0].contourf(month1.longitude, month1.latitude, month1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r")
+    axs[0].contourf(m1_pvals.longitude, m1_pvals.latitude, m1_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[0].coastlines()
     axs[0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[0].set_title("November " + YEAR, loc = "left")
 
-    ax2 = axs[1].contourf(month2.longitude, month2.latitude, month2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax2 = axs[1].contourf(month2.longitude, month2.latitude, month2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r")
+    axs[1].contourf(m2_pvals.longitude, m2_pvals.latitude, m2_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[1].coastlines()
     axs[1].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[1].set_title("December " + YEAR, loc = "left")
 
-    ax3 = axs[2].contourf(month3.longitude, month3.latitude, month3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
+    ax3 = axs[2].contourf(month3.longitude, month3.latitude, month3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r", extend = "both")
+    axs[2].contourf(m3_pvals.longitude, m3_pvals.latitude, m3_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[2].coastlines()
     axs[2].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
-    axs[2].set_title("January " + YEAR, loc = "left")
+    axs[2].set_title("January " + YEAR2, loc = "left")
 
     plt.colorbar(ax3, ax = axs, location = "right", label = "deg C", extend = "both")
 
