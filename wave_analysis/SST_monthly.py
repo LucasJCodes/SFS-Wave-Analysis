@@ -32,8 +32,8 @@ import xarray as xr
 
 def main():
 
-    YEAR = "1997"
-    YEAR2 = "1998"
+    YEAR = "2020"
+    YEAR2 = "2021"
 
     #the filepath for the ensemble mean SST data
     waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST" + YEAR + "w_ensemble.nc"
@@ -91,7 +91,7 @@ def main():
 
     plt.colorbar(ax3, ax = axs, location = "right", label = "deg C", extend = "both")
 
-    fig.suptitle("Difference in Sea Surface Temperatures " + YEAR)
+    fig.suptitle("Difference in Sea Surface Temperatures (waves - no waves) " + YEAR)
 
     plt.savefig("SST" + YEAR + "monthly.png")
 
