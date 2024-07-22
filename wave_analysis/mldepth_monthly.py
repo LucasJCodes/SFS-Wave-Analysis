@@ -57,8 +57,8 @@ def main():
     print(week3.max())
 
     #find overall data min and max for consistent contours and single colorbar
-    vmin = -60
-    vmax = 60
+    vmin = -90
+    vmax = 90
 
     levels = cl.cont_levels(vmin, vmax, 15)
 
@@ -72,25 +72,27 @@ def main():
     #plot the differences
     fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    p1 = axs[0].pcolormesh(week1.longitude, week1.latitude, week1, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r")
+    p1 = axs[0].contourf(week1.longitude, week1.latitude, week1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r", extend = "both")
     axs[0].contourf(m1_pvals.longitude, m1_pvals.latitude, m1_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[0].coastlines()
     axs[0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[0].set_title("November " + YEAR, loc = "left")
     
-    axs[1].pcolormesh(week2.longitude, week2.latitude, week2, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r")
+    axs[1].contourf(week2.longitude, week2.latitude, week2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r")
     axs[1].contourf(m2_pvals.longitude, m2_pvals.latitude, m2_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[1].coastlines()
     axs[1].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[1].set_title("December " + YEAR, loc = "left")
 
-    axs[2].pcolormesh(week3.longitude, week3.latitude, week3, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r")
+    axs[2].contourf(week3.longitude, week3.latitude, week3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral_r")
     axs[2].contourf(m3_pvals.longitude, m3_pvals.latitude, m3_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[2].coastlines()
     axs[2].gridlines(draw_labels = {"left": "y", "bottom": "x"}, linestyle = "--", linewidth = 0.5)
     axs[2].set_title("January " + YEAR2, loc = "left")
 
     plt.colorbar(p1, ax = axs, location = "right", extend = "both")
+
+    fig.suptitle("Difference in Ocean Mixed Layer Depth (waves - no waves) " + YEAR)
 
     plt.savefig("mldepth" + YEAR + "monthly.png")
 

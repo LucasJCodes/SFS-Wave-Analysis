@@ -31,11 +31,11 @@ def main():
     STARTDAY = "01"
     ENDYEAR = "2021"
     ENDMONTH = "01"
-    ENDDAY = "31"
-    OUT_FILE = "monthly/MLDw" + STARTYEAR + STARTMONTH + ".nc"
+    ENDDAY = "30"
+    OUT_FILE = "monthly/MLD" + STARTYEAR + STARTMONTH + ".nc"
 
     #The filepaths for each model output data
-    updir = "/work2/noaa/marine/ljones/90day_experiments/waves/WAVETEST_" + "2020" + "110100_S2SW/gefs." + "2020" + "1101/00/"
+    updir = "/work2/noaa/marine/ljones/90day_experiments/no_waves/WAVETEST_" + "2020" + "110100_S2S/gefs." + "2020" + "1101/00/"
     sub = "/products/ocean/grib2/1p00/gefs.ocean.t00z.1p00.f*.grib2.nc"
 
     filelist = []

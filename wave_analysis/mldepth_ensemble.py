@@ -25,10 +25,10 @@ from readio import files_to_ens as fe
 
 def main():
 
-    OUT_FILE = "MLD1997now_ensemble.nc"
+    OUT_FILE = "MLD2020now_ensemble.nc"
 
     #The filepaths for each model output data
-    updir = "/work2/noaa/marine/ljones/90day_experiments/no_waves/WAVETEST_1997110100_S2S/gefs.19971101/00/"
+    updir = "/work2/noaa/marine/ljones/90day_experiments/no_waves/WAVETEST_2020110100_S2S/gefs.20201101/00/"
     sub = "/products/ocean/grib2/1p00/gefs.ocean.t00z.1p00.f*.grib2.nc"
 
     filelist = []
