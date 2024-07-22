@@ -31,8 +31,8 @@ import xarray as xr
 
 def main():
 
-    YEAR = "1997"
-    YEAR2 = "1998"
+    YEAR = "2015"
+    YEAR2 = "2016"
 
     path_nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "now_ensemble.nc"
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
@@ -78,16 +78,19 @@ def main():
     axs[0].contourf(m1_pvals.longitude, m1_pvals.latitude, m1_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[0].set_title("November " + YEAR)
     axs[0].coastlines()
+    axs[0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
 
     p2 = axs[1].contourf(month2.longitude, month2.latitude, month2, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax)
     axs[1].contourf(m2_pvals.longitude, m2_pvals.latitude, m2_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[1].set_title("December " + YEAR)
     axs[1].coastlines()
+    axs[1].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
 
     p3 = axs[2].contourf(month3.longitude, month3.latitude, month3, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax)
     axs[2].contourf(m3_pvals.longitude, m3_pvals.latitude, m3_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[2].set_title("January " + YEAR2) 
     axs[2].coastlines()
+    axs[2].gridlines(draw_labels = {"left": "y", "bottom": "x"}, linestyle = "--", linewidth = 0.5)
 
     fig.colorbar(p1, ax = axs, location = "right", extend = "both", label = "inches")
 
