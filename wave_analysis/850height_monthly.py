@@ -25,13 +25,15 @@ sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
 from metplot import data_range
 import cartopy.crs as ccrs
 from metplot import cont_levels
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+from stats import monthly_ttest
 import xarray as xr
 
 def main():
     
-    YEAR = "1997"
-    YEAR2 = "1998"
+    YEAR = "2020"
+    YEAR2 = "2021"
 
     #file path for the ensemble means
     wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/850Height" + YEAR + "w_ensemble.nc" 
@@ -62,26 +64,36 @@ def main():
 
     levels = cont_levels.cont_levels(vmin, vmax, 15)
 
+    #perform t testing to plot statistical significance
+    m1_pvals = monthly_ttest.monthly_ttest("850Height", YEAR, "11", 0.05)
+    m2_pvals = monthly_ttest.monthly_ttest("850Height", YEAR, "12", 0.05)
+    m3_pvals = monthly_ttest.monthly_ttest("850Height", YEAR2, "01", 0.05)
+
+    mpl.rcParams["hatch.linewidth"] = 0.5    
+
     #plot the differences
-    fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
+    fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
     fig.suptitle("Difference in 850hPa Geopotential Height (waves - no waves)", fontsize = 12)
 
-    ax1 = axs[0][0].contourf(month1.longitude, month1.latitude, month1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
-    axs[0][0].coastlines()
-    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
-    axs[0][0].set_title("November " + YEAR, loc = "left")
+    ax1 = axs[0].contourf(month1.longitude, month1.latitude, month1, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[0].contourf(m1_pvals.longitude, m1_pvals.latitude, m1_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
+    axs[0].coastlines()
+    axs[0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[0].set_title("November " + YEAR, loc = "left")
 
-    ax2 = axs[0][1].contourf(month2.longitude, month2.latitude, month2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
-    axs[0][1].coastlines()
-    axs[0][1].gridlines(linestyle = "--", linewidth = 0.5)
-    axs[0][1].set_title("December " + YEAR, loc = "left")
+    ax2 = axs[1].contourf(month2.longitude, month2.latitude, month2, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[1].contourf(m2_pvals.longitude, m2_pvals.latitude, m2_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
+    axs[1].coastlines()
+    axs[1].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[1].set_title("December " + YEAR, loc = "left")
 
-    ax3 = axs[1][0].contourf(month3.longitude, month3.latitude, month3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
-    axs[1][0].coastlines()
-    axs[1][0].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
-    axs[1][0].set_title("January " + YEAR2, loc = "left")
+    ax3 = axs[2].contourf(month3.longitude, month3.latitude, month3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    axs[0].contourf(m3_pvals.longitude, m3_pvals.latitude, m3_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
+    axs[2].coastlines()
+    axs[2].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[2].set_title("January " + YEAR2, loc = "left")
 
-    plt.colorbar(ax4, ax = axs, extend = "both", orientation = "horizontal", label = "meters")
+    fig.colorbar(ax3, ax = axs, extend = "both", location = "right", label = "meters")
 
     plt.savefig("850height" + YEAR + "monthly.png")
 
