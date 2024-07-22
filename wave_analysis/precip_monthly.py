@@ -31,8 +31,8 @@ import xarray as xr
 
 def main():
 
-    YEAR = "2020"
-    YEAR2 = "2021"
+    YEAR = "1997"
+    YEAR2 = "1998"
 
     path_nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "now_ensemble.nc"
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
@@ -65,9 +65,9 @@ def main():
     month3 = diff.sel(time = slice(YEAR2 + "-01-01", YEAR2 + "-01-31")).sum(dim = "time")
 
     #perform t testing to plot statistical significance
-    m1_pvals = monthly_ttest.monthly_ttest("APCP_surface", "1997", "11", 0.05)
-    m2_pvals = monthly_ttest.monthly_ttest("APCP_surface", "1997", "12", 0.05)
-    m3_pvals = monthly_ttest.monthly_ttest("APCP_surface", "1998", "01", 0.05)
+    m1_pvals = monthly_ttest.monthly_ttest("APCP_surface", YEAR, "11", 0.05)
+    m2_pvals = monthly_ttest.monthly_ttest("APCP_surface", YEAR, "12", 0.05)
+    m3_pvals = monthly_ttest.monthly_ttest("APCP_surface", YEAR2, "01", 0.05)
 
     mpl.rcParams["hatch.linewidth"] = 0.5
 
@@ -90,6 +90,8 @@ def main():
     axs[2].coastlines()
 
     fig.colorbar(p1, ax = axs, location = "right", extend = "both", label = "inches")
+
+    fig.suptitle("Difference in Precipitation (waves - no waves) " + YEAR)
 
     plt.savefig("precip" + YEAR + "monthly.png")
 
