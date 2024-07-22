@@ -54,7 +54,7 @@ def main():
     month1 = diff.sel(time = slice(YEAR + "-11-01", YEAR + "-11-30")).mean(dim = "time")
     month2 = diff.sel(time = slice(YEAR + "-12-01", YEAR + "-12-31")).mean(dim = "time")
     month3 = diff.sel(time = slice(YEAR2 + "-01-01", YEAR2 + "-01-30")).mean(dim = "time")
-    
+
     #find overall data min and max for consistent contours and single colorbar
     vmin = -2.0
     vmax = 2.0
@@ -66,8 +66,6 @@ def main():
     m2_pvals = monthly_ttest.monthly_ttest("SST", YEAR, "12", 0.05)
     m3_pvals = monthly_ttest.monthly_ttest("SST", YEAR2, "01", 0.05)
     
-    m1_pvals.to_netcdf(path = ("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/SSTtest.nc"), mode = "w")
-
     mpl.rcParams["hatch.linewidth"] = 0.5
 
     #plot
@@ -93,7 +91,7 @@ def main():
 
     plt.colorbar(ax3, ax = axs, location = "right", label = "deg C", extend = "both")
 
-    fig.suptitle("Difference in Sea Surface Temperatures")
+    fig.suptitle("Difference in Sea Surface Temperatures " + YEAR)
 
     plt.savefig("SST" + YEAR + "monthly.png")
 
