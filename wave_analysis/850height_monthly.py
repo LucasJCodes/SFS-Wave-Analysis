@@ -32,8 +32,8 @@ import xarray as xr
 
 def main():
     
-    YEAR = "2020"
-    YEAR2 = "2021"
+    YEAR = "1997"
+    YEAR2 = "1998"
 
     #file path for the ensemble means
     wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/850Height" + YEAR + "w_ensemble.nc" 
@@ -44,8 +44,8 @@ def main():
     wave_in = xr.open_mfdataset(wave_path)
 
     #subset data to get 850 hPa heights only at 12z each day
-    nowave_850 = nowave_in["HGT_850mb"] #.sel(time = (nowave_in.time.dt.hour == 12))
-    wave_850 = wave_in["HGT_850mb"] #.sel(time = (wave_in.time.dt.hour == 12))
+    nowave_850 = nowave_in["HGT_850mb"] 
+    wave_850 = wave_in["HGT_850mb"] 
 
     print(nowave_850)
     print(wave_850)
@@ -87,7 +87,7 @@ def main():
     axs[1].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[1].set_title("December " + YEAR, loc = "left")
 
-    ax3 = axs[2].contourf(month3.longitude, month3.latitude, month3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic")
+    ax3 = axs[2].contourf(month3.longitude, month3.latitude, month3, levels = levels, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "seismic", extend = "both")
     axs[2].contourf(m3_pvals.longitude, m3_pvals.latitude, m3_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[2].coastlines()
     axs[2].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)

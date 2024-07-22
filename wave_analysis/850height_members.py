@@ -26,16 +26,16 @@ from readio import members_ds
 
 def main():
 
-    STARTYEAR = "1997"
-    STARTMONTH = "11"
+    STARTYEAR = "2015"
+    STARTMONTH = "12"
     STARTDAY = "01"
-    ENDYEAR = "1997"
-    ENDMONTH = "11"
-    ENDDAY = "07"
-    OUT_FILE = "850Heightw" + STARTYEAR + STARTMONTH + STARTDAY + ".nc"
+    ENDYEAR = "2015"
+    ENDMONTH = "12"
+    ENDDAY = "31"
+    OUT_FILE = "/monthly/850Height" + STARTYEAR + STARTMONTH + ".nc"
 
     #The filepaths for each model output data
-    updir = "/work2/noaa/marine/ljones/90day_experiments/waves/WAVETEST_" + STARTYEAR + "110100_S2SW/gefs." + STARTYEAR + "1101/00/"
+    updir = "/work2/noaa/marine/ljones/90day_experiments/no_waves/WAVETEST_" + STARTYEAR + "110100_S2S/gefs." + STARTYEAR + "1101/00/"
     sub = "/products/atmos/grib2/1p00/gefs.t00z.pgrb2b.1p00.f*.nc"
 
     filelist = []
