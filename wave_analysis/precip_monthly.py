@@ -31,8 +31,8 @@ import xarray as xr
 
 def main():
 
-    YEAR = "2015"
-    YEAR2 = "2016"
+    YEAR = "1997"
+    YEAR2 = "1998"
 
     path_nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "now_ensemble.nc"
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
