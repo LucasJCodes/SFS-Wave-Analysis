@@ -9,6 +9,7 @@
 
 import xarray as xr
 import matplotlib.pyplot as plt
+from matplotlib import ticker
 import datetime as dt
 import cartopy.crs as ccrs
 
@@ -42,27 +43,32 @@ def main():
     ax1 = ax[0][0].contourf(week1.xh, week1.yh, week1, transform = ccrs.PlateCarree(), cmap = "seismic")
     ax[0][0].coastlines()
     ax[0][0].set_title("Week 1")
-    fig.colorbar(ax1, location = "bottom", extend = "both", label = "deg C")
+    cbar1 = plt.colorbar(ax1, location = "bottom", extend = "both", label = "deg C")
+    cbar1.ax.tick_params(rotation = -90)
 
     ax2 = ax[0][1].contourf(week2.xh, week2.yh, week2, transform = ccrs.PlateCarree(), cmap = "seismic")
     ax[0][1].coastlines()
     ax[0][1].set_title("Week 2")
-    fig.colorbar(ax2, location = "bottom", extend = 'both', label = "deg C")
+    cbar2 = plt.colorbar(ax2, location = "bottom", extend = 'both', label = "deg C")
+    cbar2.ax.tick_params(rotation = -90)
 
     ax3 = ax[0][2].contourf(week3.xh, week3.yh, week3, transform = ccrs.PlateCarree(), cmap = "seismic")
     ax[0][2].coastlines()
     ax[0][2].set_title("Week 3")
-    fig.colorbar(ax3, location = "bottom", extend = "both", label = "deg C")
+    cbar3 = plt.colorbar(ax3, location = "bottom", extend = "both", label = "deg C")
+    cbar3.ax.tick_params(rotation = -90)
 
     ax4 = ax[1][0].contourf(week4.xh, week4.yh, week4, transform = ccrs.PlateCarree(), cmap = "seismic")
     ax[1][0].coastlines()
     ax[1][0].set_title("Week 4")
-    fig.colorbar(ax4, location = 'bottom', extend = "both", label = "deg C")
+    cbar4 = plt.colorbar(ax4, location = 'bottom', extend = "both", label = "deg C")
+    cbar4.ax.tick_params(rotation = -90)
 
     ax5 = ax[1][1].contourf(week5.xh, week5.yh, week5, transform = ccrs.PlateCarree(), cmap = "seismic")
     ax[1][1].coastlines()
     ax[1][1].set_title("Week 5")
-    fig.colorbar(ax5, location = "bottom", extend = "both", label = "deg C")
+    cbar5 = fig.colorbar(ax5, location = "bottom", extend = "both", label = "deg C")
+    cbar5.ax.tick_params(rotation = -90)
 
     plt.savefig("Weekly_SST.png")
     

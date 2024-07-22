@@ -20,6 +20,7 @@ import xarray as xr
 import datetime as dt
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
+import xesmf
 
 def main():
 
@@ -37,24 +38,26 @@ def main():
     ostia = ostia_ds.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
     wave = wave_ds.sel(time = slice("2015-11-01", "2015-11-07")).mean(dim = "time")
 
-    ostia_lon = ostia.assign_coords(xh = (ostia.xh - 360))
+    wave_lon = wave.assign_coords(xh = wave.xh + 300)
+    #ostia_lon = ostia_lon.assign_coords(xh = )
 
-    ostia_interp = ostia_lon.interp_like(wave, method = "linear") #kwargs = {"bounds_error": False, "fill_value":  "extrapolate"})
+    ostia_interp = ostia.interp_like(wave_lon, method = "linear") #kwargs = {"bounds_error": False, "fill_value":  "extrapolate"})
 
-    diff = wave - ostia_interp
+    diff = wave_lon - ostia_interp
 
-    print(ostia_lon)
-    print(wave)
+    print(wave_lon)
+    print(ostia)
     print(ostia_interp)
-    print(ostia_interp.min().values)
 
     fig, axs = plt.subplots(nrows = 3, ncols = 1, subplot_kw = {"projection": ccrs.PlateCarree()})
 
     axs[0].contourf(ostia_interp.xh, ostia_interp.yh, ostia_interp, transform = ccrs.PlateCarree())
+    axs[0].plot([0, 0], [-90, 90], color = "blue", transform = ccrs.PlateCarree())
     axs[0].coastlines()
     axs[0].set_title("OSTIA")
 
     axs[1].contourf(wave.xh, wave.yh, wave, transform = ccrs.PlateCarree())
+    axs[1].plot([0, 0], [-90, 90], color = "blue", transform = ccrs.PlateCarree())
     axs[1].coastlines()
     axs[1].set_title("GEFS")
 

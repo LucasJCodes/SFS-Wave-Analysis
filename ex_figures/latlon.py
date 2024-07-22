@@ -4,9 +4,7 @@
 
 import xarray as xr
 import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
-from emcpy.plots.map_plots import MapGridded
-from emcpy.plots import CreatePlot, CreateFigure 
+import cartopy.crs as ccrs 
 
 def main():
 
