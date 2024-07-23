@@ -31,7 +31,7 @@ import xarray as xr
 
 def main():
 
-    YEAR = "2020"
+    YEAR = "1997"
 
     path_nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "now_ensemble.nc"
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
@@ -100,6 +100,8 @@ def main():
     axs[1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
 
     fig.colorbar(p1, ax = axs, location = "bottom", extend = "both", label = "inches")
+
+    fig.suptitle("Difference in Precipitation (waves - no waves) " + YEAR)
 
     plt.savefig("precip" + YEAR + "weekly.png")
 
