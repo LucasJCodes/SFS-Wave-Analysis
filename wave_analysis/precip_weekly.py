@@ -21,27 +21,29 @@
 import sys
 sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/")
 
+from stats import weekly_ttest
 from metplot import data_range
 import cartopy.crs as ccrs
 from metplot import cont_levels
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import xarray as xr
 
 def main():
 
-    YEAR = "1997"
+    YEAR = "2020"
 
     path_nowaves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "now_ensemble.nc"
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
 
     #open and subset the wave data first
     waves_in = xr.open_mfdataset(path_waves)
-    waves = waves_in["APCP_surface"] * 1000 / 100**3 * 39.3701 #kg/m^2 to inches using water density 1 g/m^3
+    waves = waves_in["APCP_surface"] * 1000 / 100**3 * 39.3701 #kg/m^2 to inches using water density 1 g/cm^3
     waves_in.close()
 
     #open and subset the no wave data
     nowaves_in = xr.open_mfdataset(path_nowaves)
-    nowaves = nowaves_in["APCP_surface"] * 1000 / 100**3 * 39.3701 #kg/m^2 to inches using water density 1 g/m^c
+    nowaves = nowaves_in["APCP_surface"] * 1000 / 100**3 * 39.3701 #kg/m^2 to inches using water density 1 g/cm^3
     nowaves_in.close()
 
     print(waves_in)
@@ -62,26 +64,42 @@ def main():
     week3 = diff.sel(time = slice(YEAR + "-11-17", YEAR + "-11-23")).sum(dim = "time")
     week4 = diff.sel(time = slice(YEAR + "-11-24", YEAR + "-11-30")).sum(dim = "time")
 
+    #perform t testing to plot statistical significance
+    w1_pvals = weekly_ttest.weekly_ttest("APCP_surface", YEAR, "11", "01", 0.05)
+    w2_pvals = weekly_ttest.weekly_ttest("APCP_surface", YEAR, "11", "08", 0.05)
+    w3_pvals = weekly_ttest.weekly_ttest("APCP_surface", YEAR, "11", "15", 0.05)
+    w4_pvals = weekly_ttest.weekly_ttest("APCP_surface", YEAR, "11", "22", 0.05)
+
+    mpl.rcParams["hatch.linewidth"] = 0.5
+
     #plot the weekly differences
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "seismic", levels = levels, vmin = vmin, vmax = vmax, extend = "both")
+    p1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax, extend = "both")
+    axs[0][0].contourf(w1_pvals.longitude, w1_pvals.latitude, w1_pvals, colors = "none", hatches = ["/"*10], transform = ccrs.PlateCarree())
     axs[0][0].set_title("Nov. 1-7, " + YEAR)
     axs[0][0].coastlines()
+    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
 
-    p2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree(), cmap = "seismic", levels = levels, vmin = vmin, vmax = vmax)
+    p2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax)
+    axs[0][1].contourf(w2_pvals.longitude, w2_pvals.latitude, w2_pvals, colors = "none", hatches = ["/"*10], transform = ccrs.PlateCarree())
     axs[0][1].set_title("Nov. 8-14, " + YEAR)
     axs[0][1].coastlines()
+    axs[0][1].gridlines(linestyle = "--", linewidth = 0.5)
 
-    p3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, transform = ccrs.PlateCarree(), cmap = "seismic", levels = levels, vmin = vmin, vmax = vmax)
+    p3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax)
+    axs[1][0].contourf(w3_pvals.longitude, w3_pvals.latitude, w3_pvals, colors = "none", hatches = ["/"*10], transform = ccrs.PlateCarree())
     axs[1][0].set_title("Nov. 15-21, " + YEAR) 
     axs[1][0].coastlines()
+    axs[1][0].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
 
-    p4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, transform = ccrs.PlateCarree(), cmap = "seismic", levels = levels, vmin = vmin, vmax = vmax) 
+    p4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, transform = ccrs.PlateCarree(), cmap = "Spectral", levels = levels, vmin = vmin, vmax = vmax) 
+    axs[1][1].contourf(w4_pvals.longitude, w4_pvals.latitude, w4_pvals, colors = "none", hatches = ["/"*10], transform = ccrs.PlateCarree())
     axs[1][1].set_title("Nov. 22-28, " + YEAR)
     axs[1][1].coastlines()
+    axs[1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
 
-    fig.colorbar(p1, ax = axs, location = "bottom", extend = "both")
+    fig.colorbar(p1, ax = axs, location = "bottom", extend = "both", label = "inches")
 
     plt.savefig("precip" + YEAR + "weekly.png")
 
