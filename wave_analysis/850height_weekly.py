@@ -32,7 +32,7 @@ import xarray as xr
 
 def main():
     
-    YEAR = "2020"
+    YEAR = "1997"
 
     #file path for the ensemble means
     wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/850Height" + YEAR + "w_ensemble.nc" 
@@ -57,6 +57,8 @@ def main():
     week2 = diff.sel(time = slice(YEAR + "-11-08", YEAR + "-11-14")).mean(dim = "time")
     week3 = diff.sel(time = slice(YEAR + "-11-15", YEAR + "-11-21")).mean(dim = "time")
     week4 = diff.sel(time = slice(YEAR + "-11-22", YEAR + "-11-28")).mean(dim = "time")
+
+    print(week1.max().values)
 
     #set the range for the data so the contour levels and colorbar are the same
     vmin = -120 #data_range.data_range(diff)
