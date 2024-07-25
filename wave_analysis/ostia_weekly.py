@@ -35,13 +35,13 @@ import xesmf as xe
 
 def main():
 
-    YEAR = "2015"
-    YEAR2 = "2016"
-    OSTIA = "201*"
+    YEAR = "2020"
+    YEAR2 = "2021"
+    OSTIA = "202*"
 
     #constants holding the number of rows and columns in the final figure (used outside figure creation)
-    NROWS = 3
-    NCOLS = 4
+    NROWS = 4
+    NCOLS = 3
 
     ostia_path = "/work2/noaa/marine/jmeixner/ReferenceData/sst_OSTIA/1p00/daily/sst_OSTIA." + OSTIA + ".1p00.nc" 
     nowave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST" + YEAR + "now_ensemble.nc"
@@ -79,14 +79,14 @@ def main():
     nowave_ostia = nowave_ds - ostia_hr
 
     #set min and max and created levels for  constant color bars across the same calculation 
-    wnow_min = -1.5
-    wnow_max = 1.5  #hardcoding better for visualization
+    wnow_min = -1
+    wnow_max = 1  #hardcoding better for visualization
 
     #wnow_levels = cont_levels.cont_levels(wnow_min, wnow_max, 15)  # levels for the contour plot
     
     #use the same hardcoded levels for both ostia difference sets
-    vmin = -5
-    vmax = 5
+    vmin = -2.5
+    vmax = 2.5
 
     #ow_levels = cont_levels.cont_levels(vmin, vmax, 15)  #levels of the contour plot
 
@@ -117,44 +117,44 @@ def main():
     #plot wave vs no wave differences
     plts_wnow = []
 
-    for i in range(0, NCOLS):
-        p = axs[0][i].pcolormesh(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = wnow_min, vmax = wnow_max)
-        axs[0][i].set_title("Week {}".format(i + 1))
-        axs[0][i].coastlines()
-        axs[0][i].gridlines(linestyle = "--", linewidth = 0.5)
+    for i in range(0, NROWS):
+        p = axs[i][0].pcolormesh(wnow_arr[i].lon, wnow_arr[i].lat, wnow_arr[i], transform = ccrs.PlateCarree(), cmap = "Spectral_r", vmin = wnow_min, vmax = wnow_max)
+        axs[i][0].set_title("Week {}".format(i + 1))
+        axs[i][0].coastlines()
+        axs[i][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
         plts_wnow.append(p)
 
-    axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
-    fig.colorbar(plts_wnow[0], ax = axs[0, :].ravel().tolist(), location = "bottom", label = "deg C", extend = "both")
+    axs[NROWS - 1][0].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
+    fig.colorbar(plts_wnow[0], ax = axs[:, 0].ravel().tolist(), location = "right", label = "deg C", extend = "both")
     
     #plot wave vs ostia differences
     plts_ow = []
 
-    for j in range(0, NCOLS):
-        p = axs[1][j].pcolormesh(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax)
-        axs[1][j].set_title("Week {}".format(j + 1))
-        axs[1][j].coastlines()
-        axs[1][j].gridlines(linestyle = "--", linewidth = 0.5)
+    for j in range(0, NROWS):
+        p = axs[j][1].pcolormesh(ow_arr[j].lon, ow_arr[j].lat, ow_arr[j], transform = ccrs.PlateCarree(), cmap = "Spectral_r", vmin = vmin, vmax = vmax)
+        axs[j][1].set_title("Week {}".format(j + 1))
+        axs[j][1].coastlines()
+        axs[j][1].gridlines(linestyle = "--", linewidth = 0.5)
         plts_ow.append(p)
 
-    axs[1][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[NROWS - 1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
 
     #plot now wave vs ostia differences 
     plts_onow = []
 
-    for k in range(0, NCOLS):
-        p = axs[2][k].pcolormesh(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "seismic", vmin = vmin, vmax = vmax)
-        axs[2][k].set_title("Week {}".format(k + 1))
-        axs[2][k].coastlines()
-        axs[2][k].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
+    for k in range(0, NROWS):
+        p = axs[k][2].pcolormesh(onow_arr[k].lon, onow_arr[k].lat, onow_arr[k], transform = ccrs.PlateCarree(), cmap = "Spectral_r", vmin = vmin, vmax = vmax)
+        axs[k][2].set_title("Week {}".format(k + 1))
+        axs[k][2].coastlines()
+        axs[k][2].gridlines(draw_labels = {"right": "y"}, linestyle = "--", linewidth = 0.5)
         plts_onow.append(p)
 
-    axs[2][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
+    axs[NROWS - 1][2].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
 
     #shared colorbar for both ostia difference sets
-    fig.colorbar(plts_onow[0], ax = axs[2, :].ravel().tolist(), location = "bottom", label = "deg C", extend = "both")
+    fig.colorbar(plts_onow[0], ax = axs[NROWS - 1, 1:3].ravel().tolist(), location = "bottom", label = "deg C", extend = "both")
 
-    fig.suptitle("GEFS SSTs w/ and w/o Waves Compared to OSTIA")
+    fig.suptitle("Waves - No Waves, Waves - OSTIA, No Waves - OSTIA " + YEAR)
 
     plt.savefig("ostia" + YEAR + "weekly.png")
 
