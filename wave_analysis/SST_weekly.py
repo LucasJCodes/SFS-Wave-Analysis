@@ -31,7 +31,7 @@ import xarray as xr
 
 def main():
 
-    YEAR = "2020"
+    YEAR = "1997"
 
     #the filepath for the ensemble mean SST data
     waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/SST" + YEAR + "w_ensemble.nc" 
@@ -39,10 +39,8 @@ def main():
 
     #read in data
     waves_in = xr.open_mfdataset(waves)["WTMP_surface"] - 273.15  #convert to deg C
-    #waves = waves_in.sel(time = (waves_in.time.dt.hour == 12))  #only the 12z times
 
     nowaves_in = xr.open_mfdataset(nowaves)["WTMP_surface"] - 273.15 #convert to deg C
-    #nowaves = nowaves_in.sel(time = (nowaves_in.time.dt.hour == 12)) #only the 12z times
 
     diff = waves_in - nowaves_in
 
@@ -57,7 +55,7 @@ def main():
 
     #find overall data min and max for consistent contours and single colorbar
     vmin = -1
-    vmax = 1 #data_range.data_range(diff)
+    vmax = 1
     
     levs = cont_levels.cont_levels(vmin, vmax, 15)
 
@@ -72,25 +70,25 @@ def main():
     #plot
     fig, axs = plt.subplots(nrows = 2, ncols = 2, subplot_kw = {"projection": ccrs.PlateCarree()})
 
-    ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral")
+    ax1 = axs[0][0].contourf(week1.longitude, week1.latitude, week1, transform = ccrs.PlateCarree(), levels = levs, vmin = vmin, vmax = vmax, cmap = "Spectral")
     axs[0][0].contourf(w1_pvals.longitude, w1_pvals.latitude, w1_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[0][0].coastlines()
     axs[0][0].gridlines(draw_labels = {"left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[0][0].set_title("Nov. 1-7, " + YEAR, loc = "left")
 
-    ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral")
+    ax2 = axs[0][1].contourf(week2.longitude, week2.latitude, week2, transform = ccrs.PlateCarree(), levels = levs, vmin = vmin, vmax = vmax, cmap = "Spectral")
     axs[0][1].contourf(w2_pvals.longitude, w2_pvals.latitude, w2_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[0][1].coastlines()
     axs[0][1].gridlines(linestyle = "--", linewidth = 0.5)
     axs[0][1].set_title("Nov. 8-14, " + YEAR, loc = "left")
 
-    ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral")
+    ax3 = axs[1][0].contourf(week3.longitude, week3.latitude, week3, transform = ccrs.PlateCarree(), levels = levs, vmin = vmin, vmax = vmax, cmap = "Spectral")
     axs[1][0].contourf(w3_pvals.longitude, w3_pvals.latitude, w3_pvals, colors = "none", tranform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[1][0].coastlines()
     axs[1][0].gridlines(draw_labels = {"bottom": "x", "left": "y"}, linestyle = "--", linewidth = 0.5)
     axs[1][0].set_title("Nov. 15-21, " + YEAR, loc = "left")
 
-    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, levels = levs, vmin = vmin, vmax = vmax, transform = ccrs.PlateCarree(), cmap = "Spectral", extend = "both")
+    ax4 = axs[1][1].contourf(week4.longitude, week4.latitude, week4, transform = ccrs.PlateCarree(), levels = levs, vmin = vmin, vmax = vmax, cmap = "Spectral", extend = "both")
     axs[1][1].contourf(w4_pvals.longitude, w4_pvals.latitude, w4_pvals, colors = "none", transform = ccrs.PlateCarree(), hatches = ["/"*10])
     axs[1][1].coastlines()
     axs[1][1].gridlines(draw_labels = {"bottom": "x"}, linestyle = "--", linewidth = 0.5)
