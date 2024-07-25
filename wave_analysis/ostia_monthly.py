@@ -35,9 +35,9 @@ import xesmf as xe
 
 def main():
 
-    YEAR = "2015"
-    YEAR2 = "2016"
-    OSTIA = "201*"
+    YEAR = "2020"
+    YEAR2 = "2021"
+    OSTIA = "202*"
 
     #constants holding the number of rows and columns in the final figure (used outside figure creation)
     NROWS = 3
