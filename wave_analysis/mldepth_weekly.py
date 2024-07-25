@@ -31,7 +31,7 @@ import xarray as xr
 
 def main():
 
-    YEAR = "2020"
+    YEAR = "1997"
 
     #paths for the ensemble values
     path_waves = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/MLD" + YEAR + "w_ensemble.nc"
