@@ -16,8 +16,8 @@ import xarray as xr
 
 def weekly_ttest(variable, year, start_month, start_day, alpha):
 
-    waves_in = xr.open_dataset("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/weekly/" + variable + "w" + year + start_month + start_day + ".nc")
-    nowaves_in = xr.open_dataset("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/weekly/" + variable + year + start_month + start_day + ".nc")
+    waves_in = xr.open_dataarray("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/weekly/" + variable + "w" + year + start_month + start_day + ".nc")
+    nowaves_in = xr.open_dataarray("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/weekly/" + variable + year + start_month + start_day + ".nc")
 
     pvals = ttest.ttest(waves_in, nowaves_in, alpha)
 
