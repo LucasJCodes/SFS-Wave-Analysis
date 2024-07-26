@@ -12,10 +12,10 @@ import xarray as xr
 
 def read_time(filename, variable, start_date, end_date):
 
-    data_in xr.open_dataarray(filename)
+    data_in = xr.open_mfdataset(filename)[variable]
 
     #subset the data
-    data = data_in.sel(time = slice(start_date, end_date).mean(dim = "time"))
+    data = data_in.sel(time = slice(start_date, end_date)).mean(dim = "time")
 
     return data
 
