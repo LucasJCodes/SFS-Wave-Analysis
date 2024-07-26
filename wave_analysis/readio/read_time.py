@@ -3,7 +3,7 @@
 ############################
 #Author: Lucas Jones, Hollings Scholar Intern at NOAA EMC
 #Date: 7/17/24
-############################
+############################ 
 
 #This method reads in a set of data and subsets it for a particular time slice, calculating the mean 
 # along that slice.
