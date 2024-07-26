@@ -32,6 +32,9 @@ def ttest(data1, data2, alpha):
     xpval = xr.DataArray(add_cyclic_point(pval), coords = {"latitude": lat, "longitude": lon}, dims = ["latitude", "longitude"])
 
     #iget only statistically significant p values for plotting
+    
+    print(xpval.min())
+
     sig_pval = xpval.where(xpval.values <= alpha)
 
     return sig_pval
