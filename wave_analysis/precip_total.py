@@ -73,21 +73,21 @@ def main():
 
     p1 = axs[0].contourf(total_waves.longitude, total_waves.latitude, total_waves, levels = precip_levels, vmin = vmin, vmax = vmax, cmap = "YlGnBu", transform = ccrs.PlateCarree(), extend = "max")
     axs[0].coastlines()
-    axs[0].set_title("With Waves", loc = "left")
+    axs[0].set_title("Total With Waves", loc = "left")
 
     p2 = axs[1].contourf(total_nowaves.longitude, total_nowaves.latitude, total_nowaves, levels = precip_levels, vmin = vmin, vmax = vmax, cmap = "YlGnBu", transform = ccrs.PlateCarree(), extend = "max")
     axs[1].coastlines()
-    axs[1].set_title("Without Waves", loc = "left")
+    axs[1].set_title("Total Without Waves", loc = "left")
 
     fig.colorbar(p1, ax = axs[0:2].ravel().tolist(), extend = "max", label = "inches of rain")
 
     p3 = axs[2].contourf(diff.longitude, diff.latitude, diff, levels = diff_levels, vmin = dmin, vmax = dmax, cmap = "Spectral", transform = ccrs.PlateCarree(), extend = "both")
     axs[2].coastlines()
-    axs[2].set_title("Waves - No Waves", loc = "left")
+    axs[2].set_title("Difference Waves - No Waves", loc = "left")
 
     fig.colorbar(p3, ax = axs[2], location = "right", extend = "both", label = "Difference in inches")
 
-    fig.suptitle("Total Precipitation Comparison " + YEAR)
+    fig.suptitle("Total Precipitation (Nov - Jan) Comparison " + YEAR)
 
     plt.savefig("precip" + YEAR + "total.png")
 
