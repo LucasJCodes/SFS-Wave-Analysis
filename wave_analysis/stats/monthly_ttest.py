@@ -14,10 +14,10 @@ sys.path.append("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/readi
 from stats import ttest
 import xarray as xr
 
-def weekly_ttest(variable, year, start_month, alpha):
+def monthly_ttest(variable, year, start_month, alpha):
 
-    waves_in = xr.open_dataset("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/monthly/" + variable + "w" + year + start_month + ".nc")
-    nowaves_in = xr.open_dataset("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/monthly/" + variable + year + start_month + ".nc")
+    waves_in = xr.open_dataarray("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/monthly/" + variable + "w" + year + start_month + ".nc")
+    nowaves_in = xr.open_dataarray("/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/monthly/" + variable + year + start_month + ".nc")
 
     pvals = ttest.ttest(waves_in, nowaves_in, alpha)
 
