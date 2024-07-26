@@ -29,7 +29,7 @@ import xarray as xr
 
 def main():
 
-    YEAR = "2020"
+    YEAR = "1997"
 
     #file paths for wave and non wave precip ensemble means
     waves_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
