@@ -14,6 +14,7 @@ def read_sub(filepath, variable):
     #try to read in the data
     while True:
         try:
+            print(filepath)
             ds_in = xr.open_mfdataset(filepath)
             break
 
