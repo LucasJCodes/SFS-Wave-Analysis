@@ -29,7 +29,7 @@ import xarray as xr
 
 def main():
 
-    YEAR = "1997"
+    YEAR = "2020"
 
     #file paths for wave and non wave precip ensemble means
     waves_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/precip" + YEAR + "w_ensemble.nc"
@@ -58,14 +58,7 @@ def main():
     #get max values so both total plots have same contour bins and colorbar range
     vmin = 0  #assume the smallest amount of precip is 0
 
-    wmax = total_waves.max().values
-    nowmax = total_nowaves.max().values
-
-    if wmax > nowmax:
-        vmax = wmax
-
-    else:
-        vmax = nowmax
+    vmax = 70
 
     precip_levels = cont_levels.cont_levels(0, vmax, 15)
 
