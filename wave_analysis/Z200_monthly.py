@@ -32,8 +32,8 @@ import xarray as xr
 
 def main():
     
-    YEAR = "2015"
-    YEAR2 = "2016"
+    YEAR = "1997"
+    YEAR2 = "1998"
 
     #file path for the ensemble means
     wave_path = "/work2/noaa/marine/ljones/SFS-Wave-Analysis/wave_analysis/ensembles/Z200" + YEAR + "w_ensemble.nc" 
